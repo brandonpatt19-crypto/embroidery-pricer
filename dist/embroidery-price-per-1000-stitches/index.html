@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Embroidery Price per 1,000 Stitches — Formula & Rate Calculator</title>
+    <meta name="description" content="Understand how stitch-based embroidery pricing works and calculate your own rate per 1,000 stitches from your machine speed, hooping time, and hourly target." />
+    <link rel="canonical" href="https://embroiderypricer.com/embroidery-price-per-1000-stitches" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Embroidery Price per 1,000 Stitches — Formula & Rate Calculator" />
+    <meta property="og:description" content="Understand how stitch-based embroidery pricing works and calculate your own rate per 1,000 stitches from your machine speed, hooping time, and hourly target." />
+    <meta property="og:url" content="https://embroiderypricer.com/embroidery-price-per-1000-stitches" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Why not use a sliding scale where the rate per 1,000 stitches drops as stitch count increases?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Combining a fixed per-piece handling fee (such as $1.00 or $2.00) with a flat rate per 1,000 stitches automatically produces a higher effective rate per 1,000 stitches on small designs and a lower effective rate per 1,000 stitches on large designs\u2014without maintaining a complicated multi-axis lookup chart."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What happens when a design has very few stitches, like a 1,500-stitch monogram?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "At starting values, 1,500 stitches plus a $1.00 piece fee equals $3.25. Because $3.25 is below the $5.00 minimum per piece, the calculator enforces the $5.00 minimum decoration charge."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does the rate per 1,000 stitches include the blank shirt or cap?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. The stitch rate covers decoration only. Blank garment cost and your garment markup percentage are calculated separately and added to the decoration price to form the total per-piece price."
+      }
+    }
+  ]
+}
+    </script>
+    <script type="module" crossorigin src="/assets/main-JEN0W1nX.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/main-BOvF4f-G.css">
+  </head>
+  <body>
+    <header class="site-header no-print">
+      <div class="header-inner">
+        <a href="/" class="brand-link">Embroidery Job Pricer</a>
+        <nav class="site-nav" aria-label="Pricing Guides">
+          <a href="/">Calculator</a>
+          <a href="/how-much-to-charge-for-embroidery">What to Charge</a>
+          <a href="/embroidery-price-per-1000-stitches">Price per 1,000 Stitches</a>
+          <a href="/stitch-count-calculator">Stitch Count Reader</a>
+          <a href="/how-to-price-embroidered-hats">Pricing Hats</a>
+          <a href="/privacy">Privacy</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="page-container">
+      <div class="hero-banner has-visual no-print">
+        <div class="hero-copy">
+          <span class="hero-kicker">Machine Speed & Rate Formula</span>
+          <h1>Embroidery Price per 1,000 Stitches: Setting Your Rate from Machine Time</h1>
+          <p class="hero-promise">See how stitch rates interact with per-piece fees and machine speed, then test your own rate per 1,000 stitches in the calculator below.</p>
+        </div>
+        <div class="hero-visual"><svg class="hero-svg-card" viewBox="0 0 340 175" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Machine speed to stitch rate gauge illustration">
+          <rect width="340" height="175" rx="12" fill="#f8fafc"/>
+          <!-- Speedometer Gauge -->
+          <path d="M42 122 A 58 58 0 0 1 158 122" fill="none" stroke="#e2e8f0" stroke-width="14" stroke-linecap="round"/>
+          <path d="M42 122 A 58 58 0 0 1 142 82" fill="none" stroke="#1d4ed8" stroke-width="14" stroke-linecap="round"/>
+          <line x1="100" y1="122" x2="132" y2="86" stroke="#dc2626" stroke-width="3.5" stroke-linecap="round"/>
+          <circle cx="100" cy="122" r="6" fill="#0f172a"/>
+          <text x="100" y="144" text-anchor="middle" font-family="system-ui,sans-serif" font-size="12" font-weight="800" fill="#0f172a">650 SPM</text>
+          <text x="100" y="158" text-anchor="middle" font-family="system-ui,sans-serif" font-size="10" fill="#475569">+1.0m hoop · 30s trim</text>
+          <!-- Rate Comparison Bars -->
+          <rect x="182" y="26" width="142" height="36" rx="6" fill="#eff6ff" stroke="#bfdbfe"/>
+          <text x="192" y="41" font-family="system-ui,sans-serif" font-size="10" font-weight="700" fill="#1e40af">4,000 STITCHES (8.15m)</text>
+          <text x="192" y="55" font-family="system-ui,sans-serif" font-size="12" font-weight="800" fill="#0f172a">$6.30/pc &rarr; $46.38/hr</text>
+          <rect x="182" y="70" width="142" height="36" rx="6" fill="#eff6ff" stroke="#93c5fd"/>
+          <text x="192" y="85" font-family="system-ui,sans-serif" font-size="10" font-weight="700" fill="#1e40af">8,000 STITCHES (14.31m)</text>
+          <text x="192" y="99" font-family="system-ui,sans-serif" font-size="12" font-weight="800" fill="#0f172a">$11.70/pc &rarr; $49.06/hr</text>
+          <rect x="182" y="114" width="142" height="36" rx="6" fill="#dcfce7" stroke="#86efac"/>
+          <text x="192" y="129" font-family="system-ui,sans-serif" font-size="10" font-weight="700" fill="#166534">15,000 STITCHES (25.08m)</text>
+          <text x="192" y="143" font-family="system-ui,sans-serif" font-size="12" font-weight="800" fill="#14532d">$21.15/pc &rarr; $50.60/hr</text>
+        </svg></div>
+      </div>
+
+      <div id="sticky-jump-wrapper" class="sticky-jump-wrapper no-print">
+        <div class="jump-calc-pill">
+          <a href="#embroidery-tool-root" class="jump-calc-link">Jump to calculator</a>
+          <button type="button" id="btn-close-jump-pill" class="jump-calc-close" aria-label="Close jump to calculator button">&times;</button>
+        </div>
+      </div>
+      <article class="article-content article-first no-print">
+<h2>Why Embroidery Is Priced per 1,000 Stitches</h2>
+        <p>
+          Two embroidery designs that measure the exact same width and height on a shirt can take completely different amounts of time to sew. An open line-art monogram measuring 3.5 inches wide might contain 3,000 stitches, while a full-coverage tatami patch of the same size can exceed 16,000 stitches. Because embroidery machine needle bars run at a measurable stitch speed—counted in stitches per minute (spm)—stitch count is the most direct measure of machine time and thread consumption.
+        </p>
+
+        <figure class="article-figure">
+          <svg viewBox="0 0 680 135" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Stitch count versus hourly rate stability chart">
+            <rect width="680" height="135" rx="8" fill="#ffffff"/>
+            <rect x="18" y="18" width="200" height="98" rx="8" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
+            <text x="118" y="40" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" font-weight="700" fill="#1d4ed8">SMALL LEFT-CHEST (4,000 STS)</text>
+            <text x="118" y="64" text-anchor="middle" font-family="system-ui,sans-serif" font-size="16" font-weight="800" fill="#0f172a">$6.30/pc (at 24)</text>
+            <text x="118" y="84" text-anchor="middle" font-family="system-ui,sans-serif" font-size="12" fill="#334155">Run time: 8.15 min/pc</text>
+            <text x="118" y="103" text-anchor="middle" font-family="system-ui,sans-serif" font-size="12" font-weight="800" fill="#1e40af">Earns $46.38 / hr</text>
+
+            <rect x="240" y="18" width="200" height="98" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+            <text x="340" y="40" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" font-weight="700" fill="#1d4ed8">STANDARD LOGO (8,000 STS)</text>
+            <text x="340" y="64" text-anchor="middle" font-family="system-ui,sans-serif" font-size="16" font-weight="800" fill="#0f172a">$11.70/pc (at 24)</text>
+            <text x="340" y="84" text-anchor="middle" font-family="system-ui,sans-serif" font-size="12" fill="#334155">Run time: 14.31 min/pc</text>
+            <text x="340" y="103" text-anchor="middle" font-family="system-ui,sans-serif" font-size="12" font-weight="800" fill="#1e40af">Earns $49.06 / hr</text>
+
+            <rect x="462" y="18" width="200" height="98" rx="8" fill="#dcfce7" stroke="#22c55e" stroke-width="1.5"/>
+            <text x="562" y="40" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" font-weight="700" fill="#15803d">DENSE EMBLEM (15,000 STS)</text>
+            <text x="562" y="64" text-anchor="middle" font-family="system-ui,sans-serif" font-size="16" font-weight="800" fill="#14532d">$21.15/pc (at 24)</text>
+            <text x="562" y="84" text-anchor="middle" font-family="system-ui,sans-serif" font-size="12" fill="#166534">Run time: 25.08 min/pc</text>
+            <text x="562" y="103" text-anchor="middle" font-family="system-ui,sans-serif" font-size="12" font-weight="800" fill="#15803d">Earns $50.60 / hr</text>
+          </svg>
+          <figcaption>How Combining a $1.50/1k Stitch Rate + $1.00 Handling Fee Stabilizes Machine Hourly Revenue Across Design Sizes</figcaption>
+        </figure>
+        <p>
+          However, charging <em>only</em> a flat rate per 1,000 stitches without a per-piece handling fee creates a trap on small designs. A 2,000-stitch name drop still requires hooping the garment, sliding it onto the machine, trimming stabilizer, andsteaming or folding. That is why the pricing formula in this tool combines a <strong>rate per 1,000 stitches</strong> with a fixed <strong>per-piece fee</strong> and a <strong>minimum decoration charge</strong>.
+        </p>
+
+        <h2>The Stitch-Based Pricing Formula</h2>
+        <p>
+          Using the calculator's starting values (placeholders you should customize for your own shop: <code>$1.50</code> per 1,000 stitches, <code>$1.00</code> per-piece fee, <code>$5.00</code> minimum, and <code>6</code> included colors with <code>$0.50</code> per extra color), the decoration charge before quantity breaks is:
+        </p>
+        <p>
+          <code>base = (stitches &divide; 1,000) &times; rate + piece fee + extra-color fee &times; max(0, colors &minus; colors included)</code>
+        </p>
+        <p>
+          Let's compare how three different stitch counts behave at a single-piece rate (<code>0%</code> break) versus a 24-piece order (<code>10%</code> break) using those starting values, assuming 3 colors (2 color changes), 650 stitches per minute, 30 seconds per color change, and 1 minute of hooping:
+        </p>
+        <ul>
+          <li>
+            <strong>4,000-stitch left-chest text (3 colors):</strong>
+            <ul>
+              <li>Base decoration: <code>4 &times; $1.50 + $1.00 = $7.00</code></li>
+              <li>At 24 pieces (10% off): <code>$7.00 &times; 0.90 = $6.30</code> per piece (<code>$151.20</code> order total)</li>
+              <li>Machine time per piece: <code>4,000 &divide; 650 + (2 &times; 0.5) + 1 = 8.15 minutes</code></li>
+              <li>Effective hourly rate at 24 pieces: <code>($6.30 &divide; 8.15) &times; 60 = $46.38/hr</code></li>
+            </ul>
+          </li>
+          <li>
+            <strong>8,000-stitch cap logo (Worked Example 1, 3 colors):</strong>
+            <ul>
+              <li>Base decoration: <code>8 &times; $1.50 + $1.00 = $13.00</code></li>
+              <li>At 24 pieces (10% off): <code>$13.00 &times; 0.90 = $11.70</code> per piece (<code>$280.80</code> order total)</li>
+              <li>Machine time per piece: <code>8,000 &divide; 650 + (2 &times; 0.5) + 1 = 14.31 minutes</code></li>
+              <li>Effective hourly rate at 24 pieces: <code>($11.70 &divide; 14.31) &times; 60 = $49.06/hr</code></li>
+            </ul>
+          </li>
+          <li>
+            <strong>15,000-stitch dense emblem (3 colors):</strong>
+            <ul>
+              <li>Base decoration: <code>15 &times; $1.50 + $1.00 = $23.50</code></li>
+              <li>At 24 pieces (10% off): <code>$23.50 &times; 0.90 = $21.15</code> per piece (<code>$507.60</code> order total)</li>
+              <li>Machine time per piece: <code>15,000 &divide; 650 + (2 &times; 0.5) + 1 = 25.08 minutes</code></li>
+              <li>Effective hourly rate at 24 pieces: <code>($21.15 &divide; 25.08) &times; 60 = $50.60/hr</code></li>
+            </ul>
+          </li>
+        </ul>
+        <p>
+          Notice how pairing the <code>$1.50</code> stitch rate with the <code>$1.00</code> per-piece hooping fee keeps the effective hourly rate remarkably steady across all three design sizes—ranging from <code>$46.38/hr</code> on the 4,000-stitch design to <code>$50.60/hr</code> on the 15,000-stitch design.
+        </p>
+
+        <h2>How to Back-Calculate Your Own Rate per 1,000 Stitches</h2>
+        <p>
+          Instead of copying another shop's price chart without knowing their equipment or overhead, you can derive your own rate per 1,000 stitches from three numbers you already know:
+        </p>
+        <ol>
+          <li><strong>Your real average stitching speed:</strong> Time a representative design on your machine from start to finish. If an 8,000-stitch design with 2 color changes takes 13 minutes and 18 seconds of machine run time (excluding hooping), and the 2 color changes took 1 minute total, your active sewing speed is roughly <code>8,000 &divide; 12.31 = 650 stitches per minute</code>.</li>
+          <li><strong>Your handling and hooping time per piece:</strong> Measure how long it takes you to hoop a garment, load and unload the frame, and trim backing. If hooping occurs while a single-head machine is stopped between garments, enter the full handling time (for example, <code>1.0</code> to <code>2.0</code> minutes). If you hoop on a second set of frames while the machine is actively sewing, enter only the frame swap time (for example, <code>0.25</code> to <code>0.5</code> minutes).</li>
+          <li><strong>Your target revenue per machine hour:</strong> Decide what one machine head needs to earn per hour to cover your labor, thread, backing, needles, power, and profit margin.</li>
+        </ol>
+        <p>
+          Suppose you run a single-head machine at <code>650</code> stitches per minute and want to earn roughly <code>$60.00/hr</code> on a 24-piece order (where a <code>10%</code> discount applies) for an 8,000-stitch, 3-color design (<code>14.31</code> minutes per piece):
+        </p>
+        <ul>
+          <li>To earn <code>$60.00/hr</code> over a <code>14.31</code>-minute cycle, the discounted decoration price per piece needs to be <code>(14.31 &divide; 60) &times; $60.00 = $14.31</code>.</li>
+          <li>Before the <code>10%</code> break at 24 pieces, that corresponds to a base price of <code>$14.31 &divide; 0.90 = $15.90</code>.</li>
+          <li>If your per-piece hooping fee is <code>$1.50</code>, the remaining <code>$14.40</code> comes from <code>8</code> thousand stitches: <code>$14.40 &divide; 8 = $1.80</code> per 1,000 stitches.</li>
+        </ul>
+        <p>
+          You can test this directly in the calculator above: open <em>Shop Rate Settings &amp; Machine Speed</em>, set <strong>Rate per 1,000 Stitches</strong> to <code>$1.80</code> and <strong>Per-Piece Fee</strong> to <code>$1.50</code>, and watch the 24-piece effective hourly rate update to <code>$60.00/hr</code> (<code>$14.31</code> per piece, <code>$343.44</code> order total).
+        </p>
+
+        <h2>Single-Head vs. Multi-Head Order Run Time</h2>
+        <p>
+          The calculator tracks both <strong>minutes per piece</strong> and <strong>order machine time</strong>:
+        </p>
+        <p>
+          <code>order machine time = (minutes per piece &times; quantity) &divide; heads</code>
+        </p>
+        <p>
+          In Worked Example 1, 24 caps at <code>14.31</code> minutes per cap require <code>343.38</code> minutes on a 1-head machine. If you run the same 24 caps on a 4-head machine (<code>heads = 4</code>), all four heads stitch simultaneously in 6 runs of 4 caps, cutting total machine run time to <code>343.38 &divide; 4 = 85.85 minutes</code> while generating the same <code>$280.80</code> order total.
+        </p>
+
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-list">
+          <div class="faq-item">
+            <h3>Why not use a sliding scale where the rate per 1,000 stitches drops as stitch count increases?</h3>
+            <p>Combining a fixed per-piece handling fee (such as $1.00 or $2.00) with a flat rate per 1,000 stitches automatically produces a higher effective rate per 1,000 stitches on small designs and a lower effective rate per 1,000 stitches on large designs—without maintaining a complicated multi-axis lookup chart.</p>
+          </div>
+          <div class="faq-item">
+            <h3>What happens when a design has very few stitches, like a 1,500-stitch monogram?</h3>
+            <p>At starting values, 1,500 stitches plus a $1.00 piece fee equals $3.25. Because $3.25 is below the $5.00 minimum per piece, the calculator enforces the $5.00 minimum decoration charge.</p>
+          </div>
+          <div class="faq-item">
+            <h3>Does the rate per 1,000 stitches include the blank shirt or cap?</h3>
+            <p>No. The stitch rate covers decoration only. Blank garment cost and your garment markup percentage are calculated separately and added to the decoration price to form the total per-piece price.</p>
+          </div>
+        </div>
+      </article>
+
+      <div class="calculator-anchor-banner no-print">
+        <p class="calculator-anchor-title">Interactive Calculator — Configured for This Guide</p>
+        <p class="calculator-anchor-note">Pre-Loaded: 15,000-Stitch Dense Emblem · Shop Rate Settings Expanded by Default ($21.15/pc at 24 pcs, $50.60/hr)</p>
+      </div>
+      <div id="embroidery-tool-root" data-tool-preset='{"modeBadge": "Preset: Rate-Tuner Mode (15,000-Stitch Emblem \u00b7 Rate Panel Open)", "designName": "15,000-Stitch Dense Jacket/Patch Emblem", "stitches": 15000, "colors": 3, "colorChanges": 2, "widthIn": 4.0, "widthMm": 101.6, "heightIn": 4.0, "heightMm": 101.6, "quantity": 24, "customerSuppliesGarment": true, "garmentCost": 0, "applySetupFee": false, "setupFee": 0, "openRatesByDefault": true}'>
+<div class="pricer-app" id="pricer-app-container">
+  <!-- Top Promise & Drop Zone (Step 1 & 2) -->
+  <section class="card drop-section no-print" aria-labelledby="drop-heading">
+    <div class="drop-header">
+      <h2 id="drop-heading" class="section-title">1. Add Your Embroidery Design (.DST or .PES)</h2>
+      <p class="privacy-badge">
+        <span aria-hidden="true">&#128274;</span> Your design file never leaves your computer — read 100% locally in your browser.
+      </p>
+    </div>
+
+    <div
+      id="drop-zone"
+      class="drop-zone"
+      tabindex="0"
+      role="button"
+    >
+      <label for="design-file-input" class="sr-only">Choose a .dst or .pes embroidery file</label>
+      <input
+        type="file"
+        id="design-file-input"
+        class="sr-only"
+        accept=".dst,.pes,application/octet-stream"
+      />
+      <div class="drop-zone-content">
+        <div class="drop-icon-badge" aria-hidden="true">
+          <svg width="38" height="38" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="4" y="6" width="32" height="28" rx="6" fill="#DBEAFE" stroke="#1D4ED8" stroke-width="2"/>
+            <circle cx="20" cy="20" r="9" fill="#FFFFFF" stroke="#1D4ED8" stroke-width="2" stroke-dasharray="3 2"/>
+            <path d="M20 14L21.8 18.2L26 20L21.8 21.8L20 26L18.2 21.8L14 20L18.2 18.2L20 14Z" fill="#DC2626"/>
+            <path d="M15 6V3M25 6V3" stroke="#1D4ED8" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <p class="drop-primary-text">
+          <strong>Drop a .DST or .PES file here</strong> or <span class="link-styled">choose a file</span>
+        </p>
+        <p class="drop-secondary-text">
+          Supports Tajima (.dst) and Brother (.pes) files up to 10 MB &middot; Instant stitch &amp; color preview
+        </p>
+      </div>
+    </div>
+
+    <div class="mode-actions">
+      <button type="button" id="btn-manual-mode" class="btn btn-secondary">
+        Enter stitch count instead (Manual mode)
+      </button>
+      <span id="loaded-file-badge" class="status-pill" aria-live="polite">
+        Preset: Rate-Tuner Mode (15,000-Stitch Emblem · Rate Panel Open)
+      </span>
+    </div>
+
+    <div id="file-error-alert" class="alert alert-error" role="alert" hidden></div>
+    <div id="file-warning-alert" class="alert alert-warning" role="status" hidden></div>
+  </section>
+
+  <!-- Main Two-Column Workspace: Left = Design & Job Inputs, Right = Answer & Quote -->
+  <div class="workspace-grid">
+    <div class="workspace-left no-print">
+      <!-- Step 3: See the Design & Override Any Number -->
+      <section class="card design-section" aria-labelledby="design-heading">
+        <div class="section-header-row">
+          <h2 id="design-heading" class="section-title">2. Design Details &amp; Preview</h2>
+          <span class="hint-text">Every number below can be overridden</span>
+        </div>
+
+        <div class="preview-wrapper">
+          <canvas
+            id="stitch-preview-canvas"
+            class="stitch-canvas"
+            width="360"
+            height="220"
+            aria-label="Embroidery stitch path preview"
+          ></canvas>
+          <div id="thread-swatches" class="thread-swatches" aria-label="Thread color sequence"></div>
+        </div>
+
+        <div class="form-grid form-grid-2">
+          <div class="field">
+            <label for="input-design-name">Design / Job Name</label>
+            <input type="text" id="input-design-name" value="15,000-Stitch Dense Jacket/Patch Emblem" />
+          </div>
+          <div class="field">
+            <label for="input-stitches">Normal Stitches (priced)</label>
+            <input type="number" id="input-stitches" min="0" max="5000000" step="100" value="15000" />
+          </div>
+          <div class="field">
+            <label for="input-colors">Thread Colors (Blocks)</label>
+            <input type="number" id="input-colors" min="1" max="99" step="1" value="3" />
+          </div>
+          <div class="field">
+            <label for="input-color-changes">Color Changes</label>
+            <input type="number" id="input-color-changes" min="0" max="98" step="1" value="2" />
+          </div>
+          <div class="field">
+            <label for="input-jumps">Jumps (unpriced)</label>
+            <input type="number" id="input-jumps" min="0" max="500000" step="1" value="0" />
+          </div>
+          <div class="field">
+            <label for="input-trims">Trims (unpriced)</label>
+            <input type="number" id="input-trims" min="0" max="500000" step="1" value="0" />
+          </div>
+          <div class="field">
+            <label for="input-width-in">Width (inches)</label>
+            <input type="number" id="input-width-in" min="0.1" max="100" step="0.05" value="4.00" />
+          </div>
+          <div class="field">
+            <label for="input-width-mm">Width (mm)</label>
+            <input type="number" id="input-width-mm" min="1" max="2540" step="0.5" value="101.6" />
+          </div>
+          <div class="field">
+            <label for="input-height-in">Height (inches)</label>
+            <input type="number" id="input-height-in" min="0.1" max="100" step="0.05" value="4.00" />
+          </div>
+          <div class="field">
+            <label for="input-height-mm">Height (mm)</label>
+            <input type="number" id="input-height-mm" min="1" max="2540" step="0.5" value="101.6" />
+          </div>
+          <div class="field field-span-2">
+            <div class="label-row">
+              <label for="input-minutes-override">Estimated Machine Time (min / piece)</label>
+              <button type="button" id="btn-reset-minutes" class="btn-inline-link" hidden>
+                Reset to calculated
+              </button>
+            </div>
+            <input
+              type="number"
+              id="input-minutes-override"
+              min="0.1"
+              max="10000"
+              step="0.05"
+              value="14.31"
+            />
+          </div>
+        </div>
+      </section>
+
+      <!-- Step 4: Set the Job -->
+      <section class="card job-section" aria-labelledby="job-heading">
+        <h2 id="job-heading" class="section-title">3. Job &amp; Garment Details</h2>
+        <div class="form-grid form-grid-2">
+          <div class="field">
+            <label for="input-quantity">Order Quantity (pieces)</label>
+            <input type="number" id="input-quantity" min="1" max="100000" step="1" value="24" />
+          </div>
+
+          <div class="field checkbox-field">
+            <label class="checkbox-label" for="input-customer-garment">
+              <input type="checkbox" id="input-customer-garment" checked />
+              <span>Customer supplies garment ($0 garment cost)</span>
+            </label>
+          </div>
+
+          <div class="field" id="garment-cost-field-wrap">
+            <label for="input-garment-cost">Blank Garment Cost ($ / piece)</label>
+            <input type="number" id="input-garment-cost" min="0" max="1000" step="0.25" value="4.50" disabled />
+          </div>
+
+          <div class="field checkbox-field">
+            <label class="checkbox-label" for="input-apply-setup">
+              <input type="checkbox" id="input-apply-setup" />
+              <span>Add one-time setup / digitizing fee</span>
+            </label>
+          </div>
+
+          <div class="field" id="setup-fee-field-wrap">
+            <label for="input-setup-fee">One-Time Setup Fee ($)</label>
+            <input type="number" id="input-setup-fee" min="0" max="5000" step="1" value="0" disabled />
+          </div>
+        </div>
+      </section>
+
+      <!-- Step 5: Adjust Rates (folded away by default) -->
+      <details id="rate-settings-details" class="card rates-details" open>
+        <summary class="rates-summary">
+          <span>4. Shop Rate Settings &amp; Machine Speed</span>
+          <span class="starting-values-tag">Starting values: change to yours</span>
+        </summary>
+        <div class="rates-body">
+          <p class="rates-note">
+            <strong>Starting values: change to yours.</strong> Changes save automatically in this browser for your next visit.
+          </p>
+
+          <div class="form-grid form-grid-2">
+            <div class="field">
+              <label for="rate-per-1000">Rate per 1,000 Stitches ($)</label>
+              <input type="number" id="rate-per-1000" min="0" max="100" step="0.05" value="1.50" />
+            </div>
+            <div class="field">
+              <label for="rate-piece-fee">Per-Piece Fee (hooping/handling $)</label>
+              <input type="number" id="rate-piece-fee" min="0" max="100" step="0.10" value="1.00" />
+            </div>
+            <div class="field">
+              <label for="rate-minimum">Minimum Decoration per Piece ($)</label>
+              <input type="number" id="rate-minimum" min="0" max="500" step="0.25" value="5.00" />
+            </div>
+            <div class="field">
+              <label for="rate-colors-included">Colors Included in Base</label>
+              <input type="number" id="rate-colors-included" min="1" max="50" step="1" value="6" />
+            </div>
+            <div class="field">
+              <label for="rate-extra-color-fee">Fee per Extra Color ($)</label>
+              <input type="number" id="rate-extra-color-fee" min="0" max="50" step="0.10" value="0.50" />
+            </div>
+            <div class="field">
+              <label for="rate-garment-markup">Garment Markup (%)</label>
+              <input type="number" id="rate-garment-markup" min="0" max="500" step="1" value="40" />
+            </div>
+            <div class="field">
+              <label for="rate-machine-speed">Machine Speed (stitches / min)</label>
+              <input type="number" id="rate-machine-speed" min="50" max="3000" step="10" value="650" />
+            </div>
+            <div class="field">
+              <label for="rate-change-seconds">Color Change Time (seconds)</label>
+              <input type="number" id="rate-change-seconds" min="0" max="600" step="5" value="30" />
+            </div>
+            <div class="field">
+              <label for="rate-hooping-minutes">Hooping / Handling Time (min / pc)</label>
+              <input type="number" id="rate-hooping-minutes" min="0" max="120" step="0.25" value="1" />
+            </div>
+            <div class="field">
+              <label for="rate-heads">Machine Heads Running Order</label>
+              <input type="number" id="rate-heads" min="1" max="64" step="1" value="1" />
+            </div>
+          </div>
+
+          <fieldset class="breaks-fieldset">
+            <legend>Quantity Break Discounts (% off decoration)</legend>
+            <div class="breaks-grid">
+              <div class="field">
+                <label for="break-discount-0">1–11 pcs (%)</label>
+                <input type="number" id="break-discount-0" min="0" max="90" step="1" value="0" />
+              </div>
+              <div class="field">
+                <label for="break-discount-1">12–23 pcs (%)</label>
+                <input type="number" id="break-discount-1" min="0" max="90" step="1" value="5" />
+              </div>
+              <div class="field">
+                <label for="break-discount-2">24–47 pcs (%)</label>
+                <input type="number" id="break-discount-2" min="0" max="90" step="1" value="10" />
+              </div>
+              <div class="field">
+                <label for="break-discount-3">48–143 pcs (%)</label>
+                <input type="number" id="break-discount-3" min="0" max="90" step="1" value="15" />
+              </div>
+              <div class="field">
+                <label for="break-discount-4">144+ pcs (%)</label>
+                <input type="number" id="break-discount-4" min="0" max="90" step="1" value="20" />
+              </div>
+            </div>
+          </fieldset>
+
+          <div class="rates-actions">
+            <button type="button" id="btn-reset-rates" class="btn btn-secondary">
+              Reset rates to starting defaults
+            </button>
+            <span id="storage-status-note" class="hint-text" aria-live="polite">
+              Settings saved locally in browser
+            </span>
+          </div>
+        </div>
+      </details>
+    </div>
+
+    <!-- Right Column: Step 6, 7, 8 (Results, Quantity Table, Quote, Print View, Waitlist) -->
+    <div class="workspace-right">
+      <section class="card results-section" aria-labelledby="results-heading">
+        <div class="print-only-header">
+          <h2 class="print-quote-title">Embroidery Job Quote</h2>
+          <p id="print-design-subtitle" class="print-quote-meta">8,000-Stitch Cap Logo · 24 pieces</p>
+        </div>
+
+        <h2 id="results-heading" class="section-title no-print">Per-Piece Price &amp; Order Summary</h2>
+
+        <div class="kpi-grid">
+          <div class="kpi-card kpi-primary">
+            <span class="kpi-label">Price per Piece</span>
+            <strong id="out-per-piece" class="kpi-value">$11.70</strong>
+            <span id="out-per-piece-sub" class="kpi-sub">Decoration $11.70 · Garment $0.00 (10% break)</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-label">Order Total</span>
+            <strong id="out-order-total" class="kpi-value">$280.80</strong>
+            <span id="out-order-total-sub" class="kpi-sub">24 pieces · $0.00 setup fee</span>
+          </div>
+          <div class="kpi-card no-print-optional">
+            <span class="kpi-label">Effective Hourly Rate</span>
+            <strong id="out-hourly-rate" class="kpi-value">$49.06/hr</strong>
+            <span id="out-machine-time" class="kpi-sub">14.31 min/pc · 343.38 min order</span>
+          </div>
+        </div>
+
+        <!-- Quantity Break Price Table -->
+        <div class="table-section">
+          <h3 class="subsection-title">Quantity Break Price Table</h3>
+          <div class="table-responsive">
+            <table class="price-table" id="break-price-table">
+              <thead>
+                <tr>
+                  <th scope="col">Qty Tier</th>
+                  <th scope="col">Break</th>
+                  <th scope="col">Decoration</th>
+                  <th scope="col">Per Piece</th>
+                  <th scope="col">Tier Min Total</th>
+                  <th scope="col" class="no-print">Hourly Rate</th>
+                </tr>
+              </thead>
+              <tbody id="break-table-body">
+                <!-- Populated dynamically and pre-rendered -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Copyable Customer Quote & Print Actions -->
+        <div class="quote-box-section">
+          <div class="label-row">
+            <label for="quote-text-output" class="subsection-title">Customer Quote Summary</label>
+            <span id="copy-feedback" class="copy-feedback" aria-live="polite"></span>
+          </div>
+          <textarea
+            id="quote-text-output"
+            class="quote-textarea"
+            rows="12"
+            readonly
+          ></textarea>
+
+          <div class="quote-actions no-print">
+            <button type="button" id="btn-copy-quote" class="btn btn-primary">
+              Copy Plain-Text Quote
+            </button>
+            <button type="button" id="btn-print-quote" class="btn btn-secondary">
+              Print / Save as PDF
+            </button>
+            <button type="button" id="btn-toggle-print-view" class="btn btn-secondary" aria-pressed="false">
+              Preview Print View
+            </button>
+          </div>
+        </div>
+
+        <!-- Step 8: Paid Version Waitlist Link -->
+        <div class="waitlist-banner no-print">
+          <p>
+            <strong>Want saved rate profiles ("Caps", "Left Chest"), logo PDF quotes, and quote history?</strong>
+            Join the waitlist for the Pro desktop &amp; web unlock ($19.99 one-time, no subscription):
+            <a
+              id="waitlist-link"
+              href="https://docs.google.com/forms/d/e/1FAIpQLSfEmbroideryPricerProWaitlist/viewform"
+              target="_blank"
+              rel="noopener noreferrer"
+            >Join the Paid Version Waitlist &rarr;</a>
+          </p>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+</div>
+
+
+      <aside class="supplies-card no-print" aria-label="Recommended Embroidery Shop Supplies">
+        <div class="supplies-header">
+          <h2 class="supplies-title">Recommended High-Speed Production Consumables (Per-1,000-Stitch Cost Control)</h2>
+          <p class="supplies-subtitle">Bulk cones, pre-wound bobbins, and stabilizers that keep your consumable cost under $0.25 per piece</p>
+        </div>
+        <div class="supplies-grid">
+          <div class="supply-item" data-affiliate-slot="thread-40wt-poly">
+            <div>
+              <div class="supply-top-row">
+                <span class="supply-icon-box"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1d4ed8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="3" width="12" height="4" rx="1"/><rect x="6" y="17" width="12" height="4" rx="1"/><path d="M8 7v10M16 7v10M8 10h8M8 14h8"/></svg></span>
+                <div>
+                  <span class="supply-tag">Bulk 5,500m Cones</span>
+                  <h3 class="supply-name">40 wt Trilobal Polyester King Cones</h3>
+                </div>
+              </div>
+              <p class="supply-spec">A 5,500m king cone yields roughly 900,000 to 1,000,000 stitches—keeping top-thread cost around $0.01 per 1,000 stitches.</p>
+            </div>
+            <!-- AFFILIATE_URL_SLOT: thread-40wt-poly (Replace with <a href="YOUR_URL" class="supply-link-slot" target="_blank" rel="sponsored noopener noreferrer">Check bulk prices &rarr;</a>) -->
+          </div>
+          <div class="supply-item" data-affiliate-slot="prewound-bobbins-gross">
+            <div>
+              <div class="supply-top-row">
+                <span class="supply-icon-box"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1d4ed8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="3" width="12" height="4" rx="1"/><rect x="6" y="17" width="12" height="4" rx="1"/><path d="M8 7v10M16 7v10M8 10h8M8 14h8"/></svg></span>
+                <div>
+                  <span class="supply-tag">Fast Bobbin Changes</span>
+                  <h3 class="supply-name">144-Pack Pre-Wound 60 wt L-Style Bobbins</h3>
+                </div>
+              </div>
+              <p class="supply-spec">Consistent yardage per bobbin reduces downtime between runs and keeps machine speed averages high.</p>
+            </div>
+            <!-- AFFILIATE_URL_SLOT: prewound-bobbins-gross (Replace with <a href="YOUR_URL" class="supply-link-slot" target="_blank" rel="sponsored noopener noreferrer">Check bulk prices &rarr;</a>) -->
+          </div>
+          <div class="supply-item" data-affiliate-slot="needles-titanium-bulk">
+            <div>
+              <div class="supply-top-row">
+                <span class="supply-icon-box"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1d4ed8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 3l3 3-13 13-4 1 1-4L18 3z"/><circle cx="17.5" cy="6.5" r="1"/></svg></span>
+                <div>
+                  <span class="supply-tag">Fewer Thread Breaks</span>
+                  <h3 class="supply-name">100-Pack 75/11 Titanium Nitride Needles</h3>
+                </div>
+              </div>
+              <p class="supply-spec">Titanium coating resists adhesive buildup and heat at 650–850+ spm, cutting thread-break stops.</p>
+            </div>
+            <!-- AFFILIATE_URL_SLOT: needles-titanium-bulk (Replace with <a href="YOUR_URL" class="supply-link-slot" target="_blank" rel="sponsored noopener noreferrer">Check bulk prices &rarr;</a>) -->
+          </div>
+          <div class="supply-item" data-affiliate-slot="stabilizer-cutaway">
+            <div>
+              <div class="supply-top-row">
+                <span class="supply-icon-box"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1d4ed8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.66 3.58 3 8 3s8-1.34 8-3V6"/><circle cx="12" cy="6" r="2"/></svg></span>
+                <div>
+                  <span class="supply-tag">Bulk Cutaway Roll</span>
+                  <h3 class="supply-name">2.5 oz Cutaway Stabilizer (100-Yard Roll)</h3>
+                </div>
+              </div>
+              <p class="supply-spec">Buying cutaway backing by the roll instead of pre-cut sheets cuts per-hooping stabilizer cost in half.</p>
+            </div>
+            <!-- AFFILIATE_URL_SLOT: stabilizer-cutaway (Replace with <a href="YOUR_URL" class="supply-link-slot" target="_blank" rel="sponsored noopener noreferrer">Check bulk prices &rarr;</a>) -->
+          </div>
+          <div class="supply-item" data-affiliate-slot="temporary-spray-adhesive">
+            <div>
+              <div class="supply-top-row">
+                <span class="supply-icon-box"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1d4ed8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg></span>
+                <div>
+                  <span class="supply-tag">Faster Hooping Cycles</span>
+                  <h3 class="supply-name">Temporary Embroidery Mist Adhesive (505-Style)</h3>
+                </div>
+              </div>
+              <p class="supply-spec">Holds backing and applique fabric in place during framing to shave seconds off your hooping time per piece.</p>
+            </div>
+            <!-- AFFILIATE_URL_SLOT: temporary-spray-adhesive (Replace with <a href="YOUR_URL" class="supply-link-slot" target="_blank" rel="sponsored noopener noreferrer">Check bulk prices &rarr;</a>) -->
+          </div>
+          <div class="supply-item" data-affiliate-slot="rotary-hook-oil">
+            <div>
+              <div class="supply-top-row">
+                <span class="supply-icon-box"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1d4ed8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg></span>
+                <div>
+                  <span class="supply-tag">Machine Speed Maintenance</span>
+                  <h3 class="supply-name">Clear Sewing &amp; Embroidery Rotary Hook Oil</h3>
+                </div>
+              </div>
+              <p class="supply-spec">One drop on the rotary hook race every 4–8 hours of stitching prevents friction and thread shredding.</p>
+            </div>
+            <!-- AFFILIATE_URL_SLOT: rotary-hook-oil (Replace with <a href="YOUR_URL" class="supply-link-slot" target="_blank" rel="sponsored noopener noreferrer">Check bulk prices &rarr;</a>) -->
+          </div>
+        </div>
+        <p class="supplies-note">Tip: Keep consumable costs (backing, thread, bobbin, and needle wear—typically $0.15–$0.35 per piece) covered inside your per-piece hooping and handling fee.</p>
+      </aside>
+
+    </main>
+
+    <section class="bottom-nav-banner no-print" aria-label="Bottom Pricing Guides Navigation">
+      <div class="bottom-nav-inner">
+        <a href="/" class="brand-link">Embroidery Job Pricer</a>
+        <nav class="site-nav" aria-label="Bottom Pricing Guides">
+          <a href="/">Calculator</a>
+          <a href="/how-much-to-charge-for-embroidery">What to Charge</a>
+          <a href="/embroidery-price-per-1000-stitches">Price per 1,000 Stitches</a>
+          <a href="/stitch-count-calculator">Stitch Count Reader</a>
+          <a href="/how-to-price-embroidered-hats">Pricing Hats</a>
+          <a href="/privacy">Privacy</a>
+        </nav>
+      </div>
+    </section>
+
+    <footer class="site-footer no-print">
+      <span>Embroidery Job Pricer — 100% client-side DST &amp; PES reader. Files never leave your device.</span>
+      <span>
+        <a href="/privacy">Privacy Policy</a> &middot;
+        <a
+          href="https://docs.google.com/forms/d/e/1FAIpQLSfEmbroideryPricerProWaitlist/viewform"
+          target="_blank"
+          rel="noopener noreferrer"
+        >Paid Version Waitlist</a>
+      </span>
+    </footer>
+
+    <!-- Cookieless Page Counter (Cloudflare Web Analytics — replace token in LAUNCH.md or enable automatic injection in Cloudflare Pages) -->
+    <script
+      type="text/plain"
+      data-analytics-provider="cloudflare-web-analytics"
+      data-src="https://static.cloudflareinsights.com/beacon.min.js"
+      data-cf-beacon='{"token": "REPLACE_WITH_CLOUDFLARE_WEB_ANALYTICS_TOKEN"}'
+    ></script>
+  </body>
+</html>

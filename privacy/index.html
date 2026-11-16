@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Privacy Policy — Embroidery Job Pricer</title>
+    <meta name="description" content="Privacy policy for Embroidery Job Pricer: your DST and PES embroidery files are processed 100% locally in your browser and never leave your device." />
+    <link rel="canonical" href="https://embroiderypricer.com/privacy" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Privacy Policy — Embroidery Job Pricer" />
+    <meta property="og:description" content="Privacy policy for Embroidery Job Pricer: your DST and PES embroidery files are processed 100% locally in your browser and never leave your device." />
+    <meta property="og:url" content="https://embroiderypricer.com/privacy" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  </head>
+  <body>
+    <header class="site-header no-print">
+      <div class="header-inner">
+        <a href="/" class="brand-link">Embroidery Job Pricer</a>
+        <nav class="site-nav" aria-label="Pricing Guides">
+          <a href="/">Calculator</a>
+          <a href="/how-much-to-charge-for-embroidery">What to Charge</a>
+          <a href="/embroidery-price-per-1000-stitches">Price per 1,000 Stitches</a>
+          <a href="/stitch-count-calculator">Stitch Count Reader</a>
+          <a href="/how-to-price-embroidered-hats">Pricing Hats</a>
+          <a href="/privacy">Privacy</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="page-container">
+      <div class="hero-banner no-print">
+        <div class="hero-copy">
+          <span class="hero-kicker">100% Local Browser Processing</span>
+          <h1>Privacy Policy — Local Browser File Processing</h1>
+          <p class="hero-promise">Your embroidery design files never leave your computer. Here is exactly how local browser parsing, saved settings, and cookieless analytics work.</p>
+        </div>
+      </div>
+
+      <article class="article-content no-print">
+<h2>1. Design Files Never Leave Your Device</h2>
+        <p>
+          When you drag and drop or select a Tajima (<code>.dst</code>) or Brother (<code>.pes</code>) embroidery file on any page of this site, the file is read exclusively inside your web browser using a local JavaScript Web Worker and HTML5 Canvas.
+        </p>
+        <ul>
+          <li><strong>No file uploads:</strong> No network request ever transmits your embroidery file, stitch coordinates, design label, or preview image to any server.</li>
+          <li><strong>Offline-capable parsing:</strong> Once the page has loaded in your browser, you can disconnect from the internet and continue reading <code>.dst</code> and <code>.pes</code> files and calculating quotes.</li>
+        </ul>
+
+        <h2>2. Saved Rate Settings Stay in Your Browser</h2>
+        <p>
+          When you customize your shop rate settings (such as rate per 1,000 stitches, per-piece fee, minimum charge, quantity breaks, garment markup, and machine speed), those numbers are stored locally on your device using your browser's <code>localStorage</code> under the key <code>embroidery_pricer_settings_v1</code>.
+        </p>
+        <ul>
+          <li>Your rates are never sent to a server or database.</li>
+          <li>You can clear your saved rates at any time by clicking <em>Reset rates to starting defaults</em> inside the tool or clearing site data in your browser.</li>
+          <li>If your browser blocks <code>localStorage</code> (for example, in strict private browsing mode), the calculator continues working normally using session memory.</li>
+        </ul>
+
+        <h2>3. No Cookies and No Ad Trackers</h2>
+        <p>
+          This site does not set tracking cookies, does not run advertising networks or retargeting pixels, and does not sell or share personal data.
+        </p>
+
+        <h2>4. What Analytics and the Waitlist Collect</h2>
+        <ul>
+          <li><strong>Cookieless page counter:</strong> In production, this site uses a cookieless, privacy-preserving page counter (such as Cloudflare Web Analytics) to measure aggregate page views, referring websites, country-level region, and browser/screen type without fingerprinting individual users or storing cookies.</li>
+          <li><strong>Optional Paid Version Waitlist:</strong> If you choose to click the paid version waitlist link and submit the Google Form, the email address, shop type, and feature preferences you enter on that form are collected solely to notify you about the paid version and prioritize features.</li>
+        </ul>
+      </article>
+    </main>
+
+    <section class="bottom-nav-banner no-print" aria-label="Bottom Pricing Guides Navigation">
+      <div class="bottom-nav-inner">
+        <a href="/" class="brand-link">Embroidery Job Pricer</a>
+        <nav class="site-nav" aria-label="Bottom Pricing Guides">
+          <a href="/">Calculator</a>
+          <a href="/how-much-to-charge-for-embroidery">What to Charge</a>
+          <a href="/embroidery-price-per-1000-stitches">Price per 1,000 Stitches</a>
+          <a href="/stitch-count-calculator">Stitch Count Reader</a>
+          <a href="/how-to-price-embroidered-hats">Pricing Hats</a>
+          <a href="/privacy">Privacy</a>
+        </nav>
+      </div>
+    </section>
+
+    <footer class="site-footer no-print">
+      <span>Embroidery Job Pricer — 100% client-side DST &amp; PES reader. Files never leave your device.</span>
+      <span>
+        <a href="/privacy">Privacy Policy</a> &middot;
+        <a
+          href="https://docs.google.com/forms/d/e/1FAIpQLSfEmbroideryPricerProWaitlist/viewform"
+          target="_blank"
+          rel="noopener noreferrer"
+        >Paid Version Waitlist</a>
+      </span>
+    </footer>
+
+    <!-- Cookieless Page Counter (Cloudflare Web Analytics — replace token in LAUNCH.md or enable automatic injection in Cloudflare Pages) -->
+    <script
+      type="text/plain"
+      data-analytics-provider="cloudflare-web-analytics"
+      data-src="https://static.cloudflareinsights.com/beacon.min.js"
+      data-cf-beacon='{"token": "REPLACE_WITH_CLOUDFLARE_WEB_ANALYTICS_TOKEN"}'
+    ></script>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

@@ -1,0 +1,481 @@
+{
+  "shamrockin.dst": {
+    "filename": "shamrockin.dst",
+    "format": "dst",
+    "bytes": 4946,
+    "repo": "Embroidermodder/Embroidermodder",
+    "license": "Zlib",
+    "license_url": "https://raw.githubusercontent.com/Embroidermodder/Embroidermodder/main/LICENSE.md",
+    "source_url": "https://raw.githubusercontent.com/Embroidermodder/Embroidermodder/main/data/samples/shamrockin.dst",
+    "normalStitches": 1473,
+    "jumps": 2,
+    "trims": 0,
+    "colorChanges": 0,
+    "stops": 0,
+    "threadBlocks": 1,
+    "widthMm": 49.9,
+    "heightMm": 49.3,
+    "bounds": [
+      -249,
+      -285,
+      250,
+      208
+    ],
+    "threads": [],
+    "extras": {
+      "name": "Untitled",
+      "ST": "1477",
+      "CO": "0",
+      "+X": "249",
+      "-X": "249",
+      "+Y": "285",
+      "-Y": "207",
+      "AX": "+    0",
+      "AY": "+    0",
+      "MX": "+    0",
+      "MY": "+    0",
+      "PD": "******"
+    }
+  },
+  "embroidermodder.dst": {
+    "filename": "embroidermodder.dst",
+    "format": "dst",
+    "bytes": 10977,
+    "repo": "Embroidermodder/Embroidermodder",
+    "license": "Zlib",
+    "license_url": "https://raw.githubusercontent.com/Embroidermodder/Embroidermodder/main/LICENSE.md",
+    "source_url": "https://raw.githubusercontent.com/Embroidermodder/Embroidermodder/main/test/Embroidermodder.DST",
+    "normalStitches": 3407,
+    "jumps": 30,
+    "trims": 12,
+    "colorChanges": 0,
+    "stops": 0,
+    "threadBlocks": 1,
+    "widthMm": 222.5,
+    "heightMm": 51.4,
+    "bounds": [
+      -1111,
+      -259,
+      1114,
+      255
+    ],
+    "threads": [],
+    "extras": {
+      "name": "Embroidermodder",
+      "ST": "3487",
+      "CO": "0",
+      "+X": "1114",
+      "-X": "1111",
+      "+Y": "259",
+      "-Y": "255",
+      "AX": "+    5",
+      "AY": "-    5",
+      "MX": "+    0",
+      "MY": "+    0",
+      "PD": "******"
+    }
+  },
+  "star.dst": {
+    "filename": "star.dst",
+    "format": "dst",
+    "bytes": 8213,
+    "repo": "Embroidermodder/Embroidermodder",
+    "license": "Zlib",
+    "license_url": "https://raw.githubusercontent.com/Embroidermodder/Embroidermodder/main/LICENSE.md",
+    "source_url": "https://raw.githubusercontent.com/Embroidermodder/Embroidermodder/main/test/Star.DST",
+    "normalStitches": 2550,
+    "jumps": 5,
+    "trims": 0,
+    "colorChanges": 1,
+    "stops": 0,
+    "threadBlocks": 2,
+    "widthMm": 59.1,
+    "heightMm": 62.3,
+    "bounds": [
+      -295,
+      -311,
+      296,
+      312
+    ],
+    "threads": [],
+    "extras": {
+      "name": "Star.DST",
+      "ST": "2567",
+      "CO": "1",
+      "+X": "296",
+      "-X": "295",
+      "+Y": "311",
+      "-Y": "312",
+      "AX": "+  295",
+      "AY": "+  311",
+      "MX": "+    0",
+      "MY": "+    0",
+      "PD": "******"
+    }
+  },
+  "random1-me.dst": {
+    "filename": "random1-me.dst",
+    "format": "dst",
+    "bytes": 1424,
+    "repo": "broideryfab/embroidery-ksy",
+    "license": "MIT",
+    "license_url": "https://raw.githubusercontent.com/broideryfab/embroidery-ksy/master/LICENSE",
+    "source_url": "https://raw.githubusercontent.com/broideryfab/embroidery-ksy/master/formats/tajima_dst/samples/random1-me.dst",
+    "normalStitches": 30,
+    "jumps": 261,
+    "trims": 20,
+    "colorChanges": 9,
+    "stops": 0,
+    "threadBlocks": 10,
+    "widthMm": 94.7,
+    "heightMm": 96.9,
+    "bounds": [
+      -473,
+      -484,
+      474,
+      485
+    ],
+    "threads": [],
+    "extras": {
+      "name": "random1-me",
+      "ST": "303",
+      "CO": "10",
+      "+X": "474",
+      "-X": "473",
+      "+Y": "484",
+      "-Y": "485",
+      "AX": "+0",
+      "AY": "+0",
+      "MX": "+0",
+      "MY": "+0",
+      "PD": "******"
+    }
+  },
+  "random1-wilcom.dst": {
+    "filename": "random1-wilcom.dst",
+    "format": "dst",
+    "bytes": 1170,
+    "repo": "broideryfab/embroidery-ksy",
+    "license": "MIT",
+    "license_url": "https://raw.githubusercontent.com/broideryfab/embroidery-ksy/master/LICENSE",
+    "source_url": "https://raw.githubusercontent.com/broideryfab/embroidery-ksy/master/formats/tajima_dst/samples/random1-wilcom.DST",
+    "normalStitches": 30,
+    "jumps": 178,
+    "trims": 18,
+    "colorChanges": 9,
+    "stops": 0,
+    "threadBlocks": 10,
+    "widthMm": 94.7,
+    "heightMm": 96.9,
+    "bounds": [
+      -479,
+      -500,
+      468,
+      469
+    ],
+    "threads": [],
+    "extras": {
+      "name": "random1-",
+      "ST": "219",
+      "CO": "9",
+      "+X": "468",
+      "-X": "479",
+      "+Y": "500",
+      "-Y": "469",
+      "AX": "-   37",
+      "AY": "+  152",
+      "MX": "+    0",
+      "MY": "+    0",
+      "PD": "******"
+    }
+  },
+  "embroidermodder.pes": {
+    "filename": "embroidermodder.pes",
+    "format": "pes",
+    "bytes": 21816,
+    "repo": "Embroidermodder/Embroidermodder",
+    "license": "Zlib",
+    "license_url": "https://raw.githubusercontent.com/Embroidermodder/Embroidermodder/main/LICENSE.md",
+    "source_url": "https://raw.githubusercontent.com/Embroidermodder/Embroidermodder/main/test/Embroidermodder.PES",
+    "normalStitches": 3407,
+    "jumps": 2,
+    "trims": 1,
+    "colorChanges": 0,
+    "stops": 0,
+    "threadBlocks": 1,
+    "widthMm": 51.4,
+    "heightMm": 222.5,
+    "bounds": [
+      0,
+      0,
+      514,
+      2225
+    ],
+    "threads": [
+      {
+        "hex": "#0e1f7c",
+        "description": "Prussian Blue",
+        "catalog_number": "1",
+        "brand": "Brother"
+      }
+    ],
+    "extras": {
+      "version": "4",
+      "Name": "Embroidermodder"
+    }
+  },
+  "star.pes": {
+    "filename": "star.pes",
+    "format": "pes",
+    "bytes": 7367,
+    "repo": "Embroidermodder/Embroidermodder",
+    "license": "Zlib",
+    "license_url": "https://raw.githubusercontent.com/Embroidermodder/Embroidermodder/main/LICENSE.md",
+    "source_url": "https://raw.githubusercontent.com/Embroidermodder/Embroidermodder/main/test/Star.pes",
+    "normalStitches": 2550,
+    "jumps": 2,
+    "trims": 0,
+    "colorChanges": 1,
+    "stops": 0,
+    "threadBlocks": 2,
+    "widthMm": 59.1,
+    "heightMm": 62.3,
+    "bounds": [
+      0,
+      0,
+      591,
+      623
+    ],
+    "threads": [
+      {
+        "hex": "#ed171f",
+        "description": "5",
+        "catalog_number": "800",
+        "brand": "EMBROIDERY"
+      },
+      {
+        "hex": "#f0f0f0",
+        "description": "29",
+        "catalog_number": "001",
+        "brand": "EMBROIDERY"
+      }
+    ],
+    "extras": {
+      "version": "7",
+      "Name": "Star"
+    }
+  },
+  "random1-brother-v1.pes": {
+    "filename": "random1-brother-v1.pes",
+    "format": "pes",
+    "bytes": 4106,
+    "repo": "broideryfab/embroidery-ksy",
+    "license": "MIT",
+    "license_url": "https://raw.githubusercontent.com/broideryfab/embroidery-ksy/master/LICENSE",
+    "source_url": "https://raw.githubusercontent.com/broideryfab/embroidery-ksy/master/formats/brother_pes/samples/random1-brother-v1.pes",
+    "normalStitches": 20,
+    "jumps": 10,
+    "trims": 0,
+    "colorChanges": 9,
+    "stops": 0,
+    "threadBlocks": 10,
+    "widthMm": 94.7,
+    "heightMm": 96.9,
+    "bounds": [
+      0,
+      0,
+      947,
+      969
+    ],
+    "threads": [
+      {
+        "hex": "#878787",
+        "description": "Gray",
+        "catalog_number": "39",
+        "brand": "Brother"
+      },
+      {
+        "hex": "#686ab0",
+        "description": "Wisteria Violet",
+        "catalog_number": "46",
+        "brand": "Brother"
+      },
+      {
+        "hex": "#4e2990",
+        "description": "Purple",
+        "catalog_number": "55",
+        "brand": "Brother"
+      },
+      {
+        "hex": "#9ed67d",
+        "description": "Mint Green",
+        "catalog_number": "10",
+        "brand": "Brother"
+      },
+      {
+        "hex": "#b2afd4",
+        "description": "Lavender",
+        "catalog_number": "45",
+        "brand": "Brother"
+      },
+      {
+        "hex": "#f73866",
+        "description": "Carmine",
+        "catalog_number": "48",
+        "brand": "Brother"
+      },
+      {
+        "hex": "#9ed67d",
+        "description": "Mint Green",
+        "catalog_number": "10",
+        "brand": "Brother"
+      },
+      {
+        "hex": "#4f5556",
+        "description": "Pewter",
+        "catalog_number": "19",
+        "brand": "Brother"
+      },
+      {
+        "hex": "#d0a660",
+        "description": "Khaki",
+        "catalog_number": "35",
+        "brand": "Brother"
+      },
+      {
+        "hex": "#ffd911",
+        "description": "Harvest Gold",
+        "catalog_number": "58",
+        "brand": "Brother"
+      }
+    ],
+    "extras": {
+      "version": "1",
+      "Name": "random1-"
+    }
+  },
+  "random1-brother-v6.pes": {
+    "filename": "random1-brother-v6.pes",
+    "format": "pes",
+    "bytes": 5675,
+    "repo": "broideryfab/embroidery-ksy",
+    "license": "MIT",
+    "license_url": "https://raw.githubusercontent.com/broideryfab/embroidery-ksy/master/LICENSE",
+    "source_url": "https://raw.githubusercontent.com/broideryfab/embroidery-ksy/master/formats/brother_pes/samples/random1-brother-v6.pes",
+    "normalStitches": 20,
+    "jumps": 10,
+    "trims": 0,
+    "colorChanges": 9,
+    "stops": 0,
+    "threadBlocks": 10,
+    "widthMm": 94.7,
+    "heightMm": 96.9,
+    "bounds": [
+      0,
+      0,
+      947,
+      969
+    ],
+    "threads": [
+      {
+        "hex": "#878787",
+        "description": "39",
+        "catalog_number": "817",
+        "brand": "EMBROIDERY"
+      },
+      {
+        "hex": "#686ab0",
+        "description": "46",
+        "catalog_number": "607",
+        "brand": "EMBROIDERY"
+      },
+      {
+        "hex": "#4e2990",
+        "description": "55",
+        "catalog_number": "614",
+        "brand": "EMBROIDERY"
+      },
+      {
+        "hex": "#9ed67d",
+        "description": "10",
+        "catalog_number": "502",
+        "brand": "EMBROIDERY"
+      },
+      {
+        "hex": "#b2afd4",
+        "description": "45",
+        "catalog_number": "804",
+        "brand": "EMBROIDERY"
+      },
+      {
+        "hex": "#f73866",
+        "description": "48",
+        "catalog_number": "807",
+        "brand": "EMBROIDERY"
+      },
+      {
+        "hex": "#9ed67d",
+        "description": "10",
+        "catalog_number": "502",
+        "brand": "EMBROIDERY"
+      },
+      {
+        "hex": "#4f5556",
+        "description": "19",
+        "catalog_number": "704",
+        "brand": "EMBROIDERY"
+      },
+      {
+        "hex": "#d0a660",
+        "description": "35",
+        "catalog_number": "348",
+        "brand": "EMBROIDERY"
+      },
+      {
+        "hex": "#ffd911",
+        "description": "58",
+        "catalog_number": "206",
+        "brand": "EMBROIDERY"
+      }
+    ],
+    "extras": {
+      "version": "6",
+      "Name": "random1-"
+    }
+  },
+  "random1-premier-v10.pes": {
+    "filename": "random1-premier-v10.pes",
+    "format": "pes",
+    "bytes": 2652,
+    "repo": "broideryfab/embroidery-ksy",
+    "license": "MIT",
+    "license_url": "https://raw.githubusercontent.com/broideryfab/embroidery-ksy/master/LICENSE",
+    "source_url": "https://raw.githubusercontent.com/broideryfab/embroidery-ksy/master/formats/brother_pes/samples/random1-premier-v10.pes",
+    "normalStitches": 32,
+    "jumps": 12,
+    "trims": 10,
+    "colorChanges": 0,
+    "stops": 0,
+    "threadBlocks": 1,
+    "widthMm": 94.8,
+    "heightMm": 96.8,
+    "bounds": [
+      1021,
+      501,
+      1969,
+      1469
+    ],
+    "threads": [
+      {
+        "hex": "#686ab0",
+        "description": "46",
+        "catalog_number": "607",
+        "brand": "EMBROIDERY"
+      }
+    ],
+    "extras": {
+      "version": "10",
+      "Name": ""
+    }
+  }
+}

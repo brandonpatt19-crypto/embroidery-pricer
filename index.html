@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Embroidery Pricing Calculator — Free DST & PES Job Pricer</title>
+    <meta name="description" content="Drop in your DST or PES embroidery file and get a per-piece price, machine run time, quantity price breaks, and a customer quote without your file leaving your computer." />
+    <link rel="canonical" href="https://embroiderypricer.com/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Embroidery Pricing Calculator — Free DST & PES Job Pricer" />
+    <meta property="og:description" content="Drop in your DST or PES embroidery file and get a per-piece price, machine run time, quantity price breaks, and a customer quote without your file leaving your computer." />
+    <meta property="og:url" content="https://embroiderypricer.com/" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Does my DST or PES design file get uploaded to a server?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. Your design file never leaves your computer. The file is parsed inside a local browser Web Worker using JavaScript, and no network request ever transmits your design data."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Are jump stitches and trims included in the priced stitch count?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "By default, only normal sewing stitches are used in the stitch-rate formula, while jumps and trims are displayed separately so you can see how clean the file is. You can override the priced stitch count at any time."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why does the calculator round the per-piece price before multiplying by quantity?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Rounding the unit price to the nearest cent (half up) before multiplying by the order quantity guarantees that the line item on your customer's quote multiplies out cleanly by hand."
+      }
+    }
+  ]
+}
+    </script>
+  </head>
+  <body>
+    <header class="site-header no-print">
+      <div class="header-inner">
+        <a href="/" class="brand-link">Embroidery Job Pricer</a>
+        <nav class="site-nav" aria-label="Pricing Guides">
+          <a href="/">Calculator</a>
+          <a href="/how-much-to-charge-for-embroidery">What to Charge</a>
+          <a href="/embroidery-price-per-1000-stitches">Price per 1,000 Stitches</a>
+          <a href="/stitch-count-calculator">Stitch Count Reader</a>
+          <a href="/how-to-price-embroidered-hats">Pricing Hats</a>
+          <a href="/privacy">Privacy</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="page-container">
+      <div class="hero-banner has-visual no-print">
+        <div class="hero-copy">
+          <span class="hero-kicker">100% Client-Side DST & PES Pricer</span>
+          <h1>Embroidery Pricing Calculator</h1>
+          <p class="hero-promise">Drop in your embroidery file and get a per-piece price, a quantity price table and a quote you can send, without the file ever leaving your computer.</p>
+        </div>
+        <div class="hero-visual"><svg class="hero-svg-card" viewBox="0 0 340 175" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Embroidery hoop stitch preview and instant quote illustration">
+          <rect width="340" height="175" rx="12" fill="#f8fafc"/>
+          <!-- Embroidery Hoop & Needles -->
+          <circle cx="88" cy="92" r="52" fill="#ffffff" stroke="#cbd5e1" stroke-width="7"/>
+          <circle cx="88" cy="92" r="48" fill="none" stroke="#1d4ed8" stroke-width="1.5" stroke-dasharray="4 3"/>
+          <rect x="78" y="30" width="20" height="8" rx="2" fill="#64748b"/>
+          <ellipse cx="88" cy="92" rx="34" ry="24" fill="#eff6ff" stroke="#1d4ed8" stroke-width="2.5"/>
+          <polygon points="88,73 94,85 107,85 96,93 100,106 88,98 76,106 80,93 69,85 82,85" fill="#dc2626"/>
+          <!-- Thread Spools -->
+          <circle cx="48" cy="148" r="6" fill="#1d4ed8"/><circle cx="64" cy="148" r="6" fill="#dc2626"/><circle cx="80" cy="148" r="6" fill="#15803d"/>
+          <!-- Live Quote Card -->
+          <rect x="162" y="22" width="162" height="132" rx="10" fill="#ffffff" stroke="#93c5fd" stroke-width="2"/>
+          <rect x="174" y="34" width="138" height="22" rx="5" fill="#eff6ff"/>
+          <text x="182" y="49" font-family="system-ui,sans-serif" font-size="10.5" font-weight="800" fill="#1d4ed8">8,000 STITCHES · 24 PCS</text>
+          <text x="174" y="76" font-family="system-ui,sans-serif" font-size="20" font-weight="800" fill="#0f172a">$11.70 <tspan font-size="11" font-weight="600" fill="#475569">/ piece</tspan></text>
+          <text x="174" y="96" font-family="system-ui,sans-serif" font-size="12" font-weight="700" fill="#15803d">Order Total: $280.80</text>
+          <line x1="174" y1="106" x2="310" y2="106" stroke="#e2e8f0" stroke-width="1.5"/>
+          <text x="174" y="123" font-family="system-ui,sans-serif" font-size="10.5" font-weight="600" fill="#334155">Run time: 14.31 min/pc</text>
+          <text x="174" y="140" font-family="system-ui,sans-serif" font-size="11" font-weight="800" fill="#1e40af">Earns: $49.06 / hour</text>
+        </svg></div>
+      </div>
+
+      <div id="embroidery-tool-root">
+<div class="pricer-app" id="pricer-app-container">
+  <!-- Top Promise & Drop Zone (Step 1 & 2) -->
+  <section class="card drop-section no-print" aria-labelledby="drop-heading">
+    <div class="drop-header">
+      <h2 id="drop-heading" class="section-title">1. Add Your Embroidery Design (.DST or .PES)</h2>
+      <p class="privacy-badge">
+        <span aria-hidden="true">&#128274;</span> Your design file never leaves your computer — read 100% locally in your browser.
+      </p>
+    </div>
+
+    <div
+      id="drop-zone"
+      class="drop-zone"
+      tabindex="0"
+      role="button"
+    >
+      <label for="design-file-input" class="sr-only">Choose a .dst or .pes embroidery file</label>
+      <input
+        type="file"
+        id="design-file-input"
+        class="sr-only"
+        accept=".dst,.pes,application/octet-stream"
+      />
+      <div class="drop-zone-content">
+        <div class="drop-icon-badge" aria-hidden="true">
+          <svg width="38" height="38" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="4" y="6" width="32" height="28" rx="6" fill="#DBEAFE" stroke="#1D4ED8" stroke-width="2"/>
+            <circle cx="20" cy="20" r="9" fill="#FFFFFF" stroke="#1D4ED8" stroke-width="2" stroke-dasharray="3 2"/>
+            <path d="M20 14L21.8 18.2L26 20L21.8 21.8L20 26L18.2 21.8L14 20L18.2 18.2L20 14Z" fill="#DC2626"/>
+            <path d="M15 6V3M25 6V3" stroke="#1D4ED8" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <p class="drop-primary-text">
+          <strong>Drop a .DST or .PES file here</strong> or <span class="link-styled">choose a file</span>
+        </p>
+        <p class="drop-secondary-text">
+          Supports Tajima (.dst) and Brother (.pes) files up to 10 MB &middot; Instant stitch &amp; color preview
+        </p>
+      </div>
+    </div>
+
+    <div class="mode-actions">
+      <button type="button" id="btn-manual-mode" class="btn btn-secondary">
+        Enter stitch count instead (Manual mode)
+      </button>
+      <span id="loaded-file-badge" class="status-pill" aria-live="polite">
+        Mode: Manual / Sample 8,000-stitch cap logo
+      </span>
+    </div>
+
+    <div id="file-error-alert" class="alert alert-error" role="alert" hidden></div>
+    <div id="file-warning-alert" class="alert alert-warning" role="status" hidden></div>
+  </section>
+
+  <!-- Main Two-Column Workspace: Left = Design & Job Inputs, Right = Answer & Quote -->
+  <div class="workspace-grid">
+    <div class="workspace-left no-print">
+      <!-- Step 3: See the Design & Override Any Number -->
+      <section class="card design-section" aria-labelledby="design-heading">
+        <div class="section-header-row">
+          <h2 id="design-heading" class="section-title">2. Design Details &amp; Preview</h2>
+          <span class="hint-text">Every number below can be overridden</span>
+        </div>
+
+        <div class="preview-wrapper">
+          <canvas
+            id="stitch-preview-canvas"
+            class="stitch-canvas"
+            width="360"
+            height="220"
+            aria-label="Embroidery stitch path preview"
+          ></canvas>
+          <div id="thread-swatches" class="thread-swatches" aria-label="Thread color sequence"></div>
+        </div>
+
+        <div class="form-grid form-grid-2">
+          <div class="field">
+            <label for="input-design-name">Design / Job Name</label>
+            <input type="text" id="input-design-name" value="8,000-Stitch Cap Logo" />
+          </div>
+          <div class="field">
+            <label for="input-stitches">Normal Stitches (priced)</label>
+            <input type="number" id="input-stitches" min="0" max="5000000" step="100" value="8000" />
+          </div>
+          <div class="field">
+            <label for="input-colors">Thread Colors (Blocks)</label>
+            <input type="number" id="input-colors" min="1" max="99" step="1" value="3" />
+          </div>
+          <div class="field">
+            <label for="input-color-changes">Color Changes</label>
+            <input type="number" id="input-color-changes" min="0" max="98" step="1" value="2" />
+          </div>
+          <div class="field">
+            <label for="input-jumps">Jumps (unpriced)</label>
+            <input type="number" id="input-jumps" min="0" max="500000" step="1" value="0" />
+          </div>
+          <div class="field">
+            <label for="input-trims">Trims (unpriced)</label>
+            <input type="number" id="input-trims" min="0" max="500000" step="1" value="0" />
+          </div>
+          <div class="field">
+            <label for="input-width-in">Width (inches)</label>
+            <input type="number" id="input-width-in" min="0.1" max="100" step="0.05" value="3.50" />
+          </div>
+          <div class="field">
+            <label for="input-width-mm">Width (mm)</label>
+            <input type="number" id="input-width-mm" min="1" max="2540" step="0.5" value="88.9" />
+          </div>
+          <div class="field">
+            <label for="input-height-in">Height (inches)</label>
+            <input type="number" id="input-height-in" min="0.1" max="100" step="0.05" value="2.00" />
+          </div>
+          <div class="field">
+            <label for="input-height-mm">Height (mm)</label>
+            <input type="number" id="input-height-mm" min="1" max="2540" step="0.5" value="50.8" />
+          </div>
+          <div class="field field-span-2">
+            <div class="label-row">
+              <label for="input-minutes-override">Estimated Machine Time (min / piece)</label>
+              <button type="button" id="btn-reset-minutes" class="btn-inline-link" hidden>
+                Reset to calculated
+              </button>
+            </div>
+            <input
+              type="number"
+              id="input-minutes-override"
+              min="0.1"
+              max="10000"
+              step="0.05"
+              value="14.31"
+            />
+          </div>
+        </div>
+      </section>
+
+      <!-- Step 4: Set the Job -->
+      <section class="card job-section" aria-labelledby="job-heading">
+        <h2 id="job-heading" class="section-title">3. Job &amp; Garment Details</h2>
+        <div class="form-grid form-grid-2">
+          <div class="field">
+            <label for="input-quantity">Order Quantity (pieces)</label>
+            <input type="number" id="input-quantity" min="1" max="100000" step="1" value="24" />
+          </div>
+
+          <div class="field checkbox-field">
+            <label class="checkbox-label" for="input-customer-garment">
+              <input type="checkbox" id="input-customer-garment" checked />
+              <span>Customer supplies garment ($0 garment cost)</span>
+            </label>
+          </div>
+
+          <div class="field" id="garment-cost-field-wrap">
+            <label for="input-garment-cost">Blank Garment Cost ($ / piece)</label>
+            <input type="number" id="input-garment-cost" min="0" max="1000" step="0.25" value="4.50" disabled />
+          </div>
+
+          <div class="field checkbox-field">
+            <label class="checkbox-label" for="input-apply-setup">
+              <input type="checkbox" id="input-apply-setup" />
+              <span>Add one-time setup / digitizing fee</span>
+            </label>
+          </div>
+
+          <div class="field" id="setup-fee-field-wrap">
+            <label for="input-setup-fee">One-Time Setup Fee ($)</label>
+            <input type="number" id="input-setup-fee" min="0" max="5000" step="1" value="0" disabled />
+          </div>
+        </div>
+      </section>
+
+      <!-- Step 5: Adjust Rates (folded away by default) -->
+      <details id="rate-settings-details" class="card rates-details">
+        <summary class="rates-summary">
+          <span>4. Shop Rate Settings &amp; Machine Speed</span>
+          <span class="starting-values-tag">Starting values: change to yours</span>
+        </summary>
+        <div class="rates-body">
+          <p class="rates-note">
+            <strong>Starting values: change to yours.</strong> Changes save automatically in this browser for your next visit.
+          </p>
+
+          <div class="form-grid form-grid-2">
+            <div class="field">
+              <label for="rate-per-1000">Rate per 1,000 Stitches ($)</label>
+              <input type="number" id="rate-per-1000" min="0" max="100" step="0.05" value="1.50" />
+            </div>
+            <div class="field">
+              <label for="rate-piece-fee">Per-Piece Fee (hooping/handling $)</label>
+              <input type="number" id="rate-piece-fee" min="0" max="100" step="0.10" value="1.00" />
+            </div>
+            <div class="field">
+              <label for="rate-minimum">Minimum Decoration per Piece ($)</label>
+              <input type="number" id="rate-minimum" min="0" max="500" step="0.25" value="5.00" />
+            </div>
+            <div class="field">
+              <label for="rate-colors-included">Colors Included in Base</label>
+              <input type="number" id="rate-colors-included" min="1" max="50" step="1" value="6" />
+            </div>
+            <div class="field">
+              <label for="rate-extra-color-fee">Fee per Extra Color ($)</label>
+              <input type="number" id="rate-extra-color-fee" min="0" max="50" step="0.10" value="0.50" />
+            </div>
+            <div class="field">
+              <label for="rate-garment-markup">Garment Markup (%)</label>
+              <input type="number" id="rate-garment-markup" min="0" max="500" step="1" value="40" />
+            </div>
+            <div class="field">
+              <label for="rate-machine-speed">Machine Speed (stitches / min)</label>
+              <input type="number" id="rate-machine-speed" min="50" max="3000" step="10" value="650" />
+            </div>
+            <div class="field">
+              <label for="rate-change-seconds">Color Change Time (seconds)</label>
+              <input type="number" id="rate-change-seconds" min="0" max="600" step="5" value="30" />
+            </div>
+            <div class="field">
+              <label for="rate-hooping-minutes">Hooping / Handling Time (min / pc)</label>
+              <input type="number" id="rate-hooping-minutes" min="0" max="120" step="0.25" value="1" />
+            </div>
+            <div class="field">
+              <label for="rate-heads">Machine Heads Running Order</label>
+              <input type="number" id="rate-heads" min="1" max="64" step="1" value="1" />
+            </div>
+          </div>
+
+          <fieldset class="breaks-fieldset">
+            <legend>Quantity Break Discounts (% off decoration)</legend>
+            <div class="breaks-grid">
+              <div class="field">
+                <label for="break-discount-0">1–11 pcs (%)</label>
+                <input type="number" id="break-discount-0" min="0" max="90" step="1" value="0" />
+              </div>
+              <div class="field">
+                <label for="break-discount-1">12–23 pcs (%)</label>
+                <input type="number" id="break-discount-1" min="0" max="90" step="1" value="5" />
+              </div>
+              <div class="field">
+                <label for="break-discount-2">24–47 pcs (%)</label>
+                <input type="number" id="break-discount-2" min="0" max="90" step="1" value="10" />
+              </div>
+              <div class="field">
+                <label for="break-discount-3">48–143 pcs (%)</label>
+                <input type="number" id="break-discount-3" min="0" max="90" step="1" value="15" />
+              </div>
+              <div class="field">
+                <label for="break-discount-4">144+ pcs (%)</label>
+                <input type="number" id="break-discount-4" min="0" max="90" step="1" value="20" />
+              </div>
+            </div>
+          </fieldset>
+
+          <div class="rates-actions">
+            <button type="button" id="btn-reset-rates" class="btn btn-secondary">
+              Reset rates to starting defaults
+            </button>
+            <span id="storage-status-note" class="hint-text" aria-live="polite">
+              Settings saved locally in browser
+            </span>
+          </div>
+        </div>
+      </details>
+    </div>
+
+    <!-- Right Column: Step 6, 7, 8 (Results, Quantity Table, Quote, Print View, Waitlist) -->
+    <div class="workspace-right">
+      <section class="card results-section" aria-labelledby="results-heading">
+        <div class="print-only-header">
+          <h2 class="print-quote-title">Embroidery Job Quote</h2>
+          <p id="print-design-subtitle" class="print-quote-meta">8,000-Stitch Cap Logo · 24 pieces</p>
+        </div>
+
+        <h2 id="results-heading" class="section-title no-print">Per-Piece Price &amp; Order Summary</h2>
+
+        <div class="kpi-grid">
+          <div class="kpi-card kpi-primary">
+            <span class="kpi-label">Price per Piece</span>
+            <strong id="out-per-piece" class="kpi-value">$11.70</strong>
+            <span id="out-per-piece-sub" class="kpi-sub">Decoration $11.70 · Garment $0.00 (10% break)</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-label">Order Total</span>
+            <strong id="out-order-total" class="kpi-value">$280.80</strong>
+            <span id="out-order-total-sub" class="kpi-sub">24 pieces · $0.00 setup fee</span>
+          </div>
+          <div class="kpi-card no-print-optional">
+            <span class="kpi-label">Effective Hourly Rate</span>
+            <strong id="out-hourly-rate" class="kpi-value">$49.06/hr</strong>
+            <span id="out-machine-time" class="kpi-sub">14.31 min/pc · 343.38 min order</span>
+          </div>
+        </div>
+
+        <!-- Quantity Break Price Table -->
+        <div class="table-section">
+          <h3 class="subsection-title">Quantity Break Price Table</h3>
+          <div class="table-responsive">
+            <table class="price-table" id="break-price-table">
+              <thead>
+                <tr>
+                  <th scope="col">Qty Tier</th>
+                  <th scope="col">Break</th>
+                  <th scope="col">Decoration</th>
+                  <th scope="col">Per Piece</th>
+                  <th scope="col">Tier Min Total</th>
+                  <th scope="col" class="no-print">Hourly Rate</th>
+                </tr>
+              </thead>
+              <tbody id="break-table-body">
+                <!-- Populated dynamically and pre-rendered -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Copyable Customer Quote & Print Actions -->
+        <div class="quote-box-section">
+          <div class="label-row">
+            <label for="quote-text-output" class="subsection-title">Customer Quote Summary</label>
+            <span id="copy-feedback" class="copy-feedback" aria-live="polite"></span>
+          </div>
+          <textarea
+            id="quote-text-output"
+            class="quote-textarea"
+            rows="12"
+            readonly
+          ></textarea>
+
+          <div class="quote-actions no-print">
+            <button type="button" id="btn-copy-quote" class="btn btn-primary">
+              Copy Plain-Text Quote
+            </button>
+            <button type="button" id="btn-print-quote" class="btn btn-secondary">
+              Print / Save as PDF
+            </button>
+            <button type="button" id="btn-toggle-print-view" class="btn btn-secondary" aria-pressed="false">
+              Preview Print View
+            </button>
+          </div>
+        </div>
+
+        <!-- Step 8: Paid Version Waitlist Link -->
+        <div class="waitlist-banner no-print">
+          <p>
+            <strong>Want saved rate profiles ("Caps", "Left Chest"), logo PDF quotes, and quote history?</strong>
+            Join the waitlist for the Pro desktop &amp; web unlock ($19.99 one-time, no subscription):
+            <a
+              id="waitlist-link"
+              href="https://docs.google.com/forms/d/e/1FAIpQLSfEmbroideryPricerProWaitlist/viewform"
+              target="_blank"
+              rel="noopener noreferrer"
+            >Join the Paid Version Waitlist &rarr;</a>
+          </p>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+</div>
+
+
+      <aside class="supplies-card no-print" aria-label="Recommended Embroidery Shop Supplies">
+        <div class="supplies-header">
+          <h2 class="supplies-title">Recommended Shop Supplies &amp; Consumables Reference</h2>
+          <p class="supplies-subtitle">Standard stabilizer weights, needle sizes, and thread specs for commercial &amp; home machines</p>
+        </div>
+        <div class="supplies-grid">
+          <div class="supply-item" data-affiliate-slot="stabilizer-cutaway">
+            <div>
+              <div class="supply-top-row">
+                <span class="supply-icon-box"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1d4ed8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.66 3.58 3 8 3s8-1.34 8-3V6"/><circle cx="12" cy="6" r="2"/></svg></span>
+                <div>
+                  <span class="supply-tag">Knits, Polos &amp; Hoodies</span>
+                  <h3 class="supply-name">2.5 oz – 3.0 oz Cutaway Stabilizer</h3>
+                </div>
+              </div>
+              <p class="supply-spec">Permanent backing required for stretchy knit garments so dense stitches (8,000+ stitches) do not pull or distort in the wash.</p>
+            </div>
+            <!-- AFFILIATE_URL_SLOT: stabilizer-cutaway (Replace with <a href="YOUR_URL" class="supply-link-slot" target="_blank" rel="sponsored noopener noreferrer">Check bulk prices &rarr;</a>) -->
+          </div>
+          <div class="supply-item" data-affiliate-slot="stabilizer-tearaway-cap">
+            <div>
+              <div class="supply-top-row">
+                <span class="supply-icon-box"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1d4ed8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.66 3.58 3 8 3s8-1.34 8-3V6"/><circle cx="12" cy="6" r="2"/></svg></span>
+                <div>
+                  <span class="supply-tag">Structured Caps &amp; Woven Bags</span>
+                  <h3 class="supply-name">3.0 oz Crisp Cap Tearaway Strips</h3>
+                </div>
+              </div>
+              <p class="supply-spec">Pre-cut 4" &times; 12" heavyweight tearaway backing formulated for 270&deg; cap frames and firm buckram crown panels.</p>
+            </div>
+            <!-- AFFILIATE_URL_SLOT: stabilizer-tearaway-cap (Replace with <a href="YOUR_URL" class="supply-link-slot" target="_blank" rel="sponsored noopener noreferrer">Check bulk prices &rarr;</a>) -->
+          </div>
+          <div class="supply-item" data-affiliate-slot="needles-75-11">
+            <div>
+              <div class="supply-top-row">
+                <span class="supply-icon-box"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1d4ed8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 3l3 3-13 13-4 1 1-4L18 3z"/><circle cx="17.5" cy="6.5" r="1"/></svg></span>
+                <div>
+                  <span class="supply-tag">Standard &amp; Cap Needles</span>
+                  <h3 class="supply-name">75/11 Ballpoint &amp; 80/12 Sharp Titanium</h3>
+                </div>
+              </div>
+              <p class="supply-spec">Use 75/11 ballpoint (BP) on knit polos/tees to avoid cutting fibers; switch to 80/12 sharp titanium on stiff cap buckram and center seams.</p>
+            </div>
+            <!-- AFFILIATE_URL_SLOT: needles-75-11 (Replace with <a href="YOUR_URL" class="supply-link-slot" target="_blank" rel="sponsored noopener noreferrer">Check bulk prices &rarr;</a>) -->
+          </div>
+          <div class="supply-item" data-affiliate-slot="thread-40wt-poly">
+            <div>
+              <div class="supply-top-row">
+                <span class="supply-icon-box"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1d4ed8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="3" width="12" height="4" rx="1"/><rect x="6" y="17" width="12" height="4" rx="1"/><path d="M8 7v10M16 7v10M8 10h8M8 14h8"/></svg></span>
+                <div>
+                  <span class="supply-tag">Top Thread &amp; Bobbins</span>
+                  <h3 class="supply-name">40 wt Trilobal Polyester &amp; 60 wt L-Style Bobbins</h3>
+                </div>
+              </div>
+              <p class="supply-spec">Colorfast, bleach-resistant 40 wt polyester cones (5,500m) paired with pre-wound 60 wt filament bobbins (~130–145 yards per bobbin).</p>
+            </div>
+            <!-- AFFILIATE_URL_SLOT: thread-40wt-poly (Replace with <a href="YOUR_URL" class="supply-link-slot" target="_blank" rel="sponsored noopener noreferrer">Check bulk prices &rarr;</a>) -->
+          </div>
+          <div class="supply-item" data-affiliate-slot="puff-foam-topper">
+            <div>
+              <div class="supply-top-row">
+                <span class="supply-icon-box"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1d4ed8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg></span>
+                <div>
+                  <span class="supply-tag">3D Caps &amp; Textured Fabric</span>
+                  <h3 class="supply-name">3mm EVA 3D Puff Foam &amp; Water-Soluble Topper</h3>
+                </div>
+              </div>
+              <p class="supply-spec">High-density 2mm–3mm EVA foam for raised satin cap lettering, plus water-soluble film topper to keep stitches from sinking into fleece or pique.</p>
+            </div>
+            <!-- AFFILIATE_URL_SLOT: puff-foam-topper (Replace with <a href="YOUR_URL" class="supply-link-slot" target="_blank" rel="sponsored noopener noreferrer">Check bulk prices &rarr;</a>) -->
+          </div>
+          <div class="supply-item" data-affiliate-slot="custom-digitizing">
+            <div>
+              <div class="supply-top-row">
+                <span class="supply-icon-box"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1d4ed8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="6" r="3"/><circle cx="18" cy="18" r="3"/><path d="M8.5 8.5l7 7"/><path d="M18 6h-5v5"/></svg></span>
+                <div>
+                  <span class="supply-tag">No .DST or .PES File Yet?</span>
+                  <h3 class="supply-name">Left-Chest &amp; Center-Out Cap Digitizing</h3>
+                </div>
+              </div>
+              <p class="supply-spec">Artwork (PNG/SVG/PDF) must be digitized with proper underlay and pull compensation—especially bottom-up, center-out sequencing for structured hats.</p>
+            </div>
+            <!-- AFFILIATE_URL_SLOT: custom-digitizing (Replace with <a href="YOUR_URL" class="supply-link-slot" target="_blank" rel="sponsored noopener noreferrer">Check bulk prices &rarr;</a>) -->
+          </div>
+        </div>
+        <p class="supplies-note">Tip: Keep consumable costs (backing, thread, bobbin, and needle wear—typically $0.15–$0.35 per piece) covered inside your per-piece hooping and handling fee.</p>
+      </aside>
+
+      <article class="article-content no-print">
+<h2>How the Embroidery Pricing Calculator Works</h2>
+        <p>
+          Pricing custom embroidery by guesswork either leaves money on the table when a dense logo takes twenty minutes to sew, or scares away repeat team orders when a simple left-chest design is overpriced. This calculator reads your Tajima (<code>.dst</code>) or Brother (<code>.pes</code>) file directly in your browser, counts the exact normal stitches and color changes, estimates machine run time, and builds a quantity break table and copyable quote in one step.
+        </p>
+
+        <h3>Step-by-Step Workflow</h3>
+        <ol>
+          <li><strong>Drop your design file or use manual mode:</strong> Drag a <code>.dst</code> or <code>.pes</code> file into the box above. A local browser Web Worker reads every stitch record to extract normal stitches, jumps, trims, color changes, and width &times; height in inches and millimeters. Don't have the file yet? Click <em>Enter stitch count instead</em> and type your stitch count and colors.</li>
+          <li><strong>Review or override any design number:</strong> Every extracted value—stitch count, thread colors, color changes, dimensions, and estimated minutes per piece—can be edited directly to test "what-if" scenarios.</li>
+          <li><strong>Set the order and garment details:</strong> Enter the piece quantity, choose whether the customer supplies the blank garment or you supply it with a markup percentage, and toggle any one-time digitizing or setup fee.</li>
+          <li><strong>Customize your shop rates:</strong> Open <em>Shop Rate Settings &amp; Machine Speed</em> to enter your own rate per 1,000 stitches, per-piece handling fee, minimum decoration charge, extra-color threshold, quantity break discounts, and machine speed. Your settings are saved in your browser's local storage for your next visit.</li>
+          <li><strong>Send or print the quote:</strong> Copy the plain-text quote into an email or message, or click <em>Print / Save as PDF</em> for a single-page letter quote.</li>
+        </ol>
+
+        <h3>Worked Example: 24 Custom Caps (8,000 Stitches, 3 Colors)</h3>
+        <p>
+          Using the calculator's starting values (<code>$1.50</code> per 1,000 stitches, <code>$1.00</code> per-piece fee, <code>$5.00</code> minimum, 6 colors included, and a <code>10%</code> quantity break for 24–47 pieces):
+        </p>
+        <ul>
+          <li><strong>Base decoration price:</strong> <code>(8,000 &divide; 1,000) &times; $1.50 + $1.00 = $13.00</code></li>
+          <li><strong>Discounted decoration at 24 pieces (10% off):</strong> <code>$13.00 &times; (1 &minus; 0.10) = $11.70</code> per piece (above the <code>$5.00</code> minimum)</li>
+          <li><strong>Order total (customer-supplied caps, $0 setup):</strong> <code>$11.70 &times; 24 = $280.80</code></li>
+          <li><strong>Machine time per piece:</strong> <code>8,000 &divide; 650 spm + (2 color changes &times; 0.5 min) + 1.0 min hooping = 14.31 minutes</code></li>
+          <li><strong>Effective hourly rate:</strong> <code>($11.70 &divide; 14.31 min) &times; 60 = $49.06/hr</code></li>
+        </ul>
+
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-list">
+          <div class="faq-item">
+            <h3>Does my DST or PES design file get uploaded to a server?</h3>
+            <p>No. Your design file never leaves your computer. The file is parsed inside a local browser Web Worker using JavaScript, and no network request ever transmits your design data.</p>
+          </div>
+          <div class="faq-item">
+            <h3>Are jump stitches and trims included in the priced stitch count?</h3>
+            <p>By default, only normal sewing stitches are used in the stitch-rate formula, while jumps and trims are displayed separately so you can see how clean the file is. You can override the priced stitch count at any time.</p>
+          </div>
+          <div class="faq-item">
+            <h3>Why does the calculator round the per-piece price before multiplying by quantity?</h3>
+            <p>Rounding the unit price to the nearest cent (half up) before multiplying by the order quantity guarantees that the line item on your customer's quote multiplies out cleanly by hand.</p>
+          </div>
+        </div>
+      </article>
+    </main>
+
+    <section class="bottom-nav-banner no-print" aria-label="Bottom Pricing Guides Navigation">
+      <div class="bottom-nav-inner">
+        <a href="/" class="brand-link">Embroidery Job Pricer</a>
+        <nav class="site-nav" aria-label="Bottom Pricing Guides">
+          <a href="/">Calculator</a>
+          <a href="/how-much-to-charge-for-embroidery">What to Charge</a>
+          <a href="/embroidery-price-per-1000-stitches">Price per 1,000 Stitches</a>
+          <a href="/stitch-count-calculator">Stitch Count Reader</a>
+          <a href="/how-to-price-embroidered-hats">Pricing Hats</a>
+          <a href="/privacy">Privacy</a>
+        </nav>
+      </div>
+    </section>
+
+    <footer class="site-footer no-print">
+      <span>Embroidery Job Pricer — 100% client-side DST &amp; PES reader. Files never leave your device.</span>
+      <span>
+        <a href="/privacy">Privacy Policy</a> &middot;
+        <a
+          href="https://docs.google.com/forms/d/e/1FAIpQLSfEmbroideryPricerProWaitlist/viewform"
+          target="_blank"
+          rel="noopener noreferrer"
+        >Paid Version Waitlist</a>
+      </span>
+    </footer>
+
+    <!-- Cookieless Page Counter (Cloudflare Web Analytics — replace token in LAUNCH.md or enable automatic injection in Cloudflare Pages) -->
+    <script
+      type="text/plain"
+      data-analytics-provider="cloudflare-web-analytics"
+      data-src="https://static.cloudflareinsights.com/beacon.min.js"
+      data-cf-beacon='{"token": "REPLACE_WITH_CLOUDFLARE_WEB_ANALYTICS_TOKEN"}'
+    ></script>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
