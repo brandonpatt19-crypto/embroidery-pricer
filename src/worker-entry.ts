@@ -18,6 +18,8 @@ export interface Env {
 
 const VALID_EVENTS = [
   "page_view",
+  "unique_session",
+  "return_session_separate_day",
   "returning_visit",
   "file_imported",
   "calculation_edited",
@@ -42,16 +44,22 @@ interface TelemetryState {
   startedAt: string;
   counts: Record<FunnelEventName, number>;
   byPage: Record<string, number>;
+  byShopType: Record<string, number>;
+  byTopFeature: Record<string, number>;
   waitlistEntries: WaitlistEntry[];
 }
 
 const CACHE_STATE_URL = "https://telemetry.embroiderypricer.internal/state-v1";
+// Owner access key required to view PII email addresses on /stats?key=... or /api/stats?key=...
+const DEFAULT_ADMIN_KEY = "bp-embroidery-2026-admin";
 
 function createInitialState(): TelemetryState {
   return {
     startedAt: new Date().toISOString(),
     counts: {
       page_view: 0,
+      unique_session: 0,
+      return_session_separate_day: 0,
       returning_visit: 0,
       file_imported: 0,
       calculation_edited: 0,
@@ -62,6 +70,8 @@ function createInitialState(): TelemetryState {
       supply_clicked: 0
     },
     byPage: {},
+    byShopType: {},
+    byTopFeature: {},
     waitlistEntries: []
   };
 }
@@ -78,7 +88,10 @@ async function loadState(): Promise<TelemetryState> {
       memoryState = {
         ...createInitialState(),
         ...parsed,
-        counts: { ...createInitialState().counts, ...(parsed.counts ?? {}) }
+        counts: { ...createInitialState().counts, ...(parsed.counts ?? {}) },
+        byPage: parsed.byPage ?? {},
+        byShopType: parsed.byShopType ?? {},
+        byTopFeature: parsed.byTopFeature ?? {}
       };
       return memoryState;
     }
@@ -113,7 +126,26 @@ function escapeHtml(str: string): string {
     .replace(/"/g, "&quot;");
 }
 
-function renderStatsDashboardHtml(state: TelemetryState): string {
+function isAdminAuthorized(request: Request, url: URL): boolean {
+  const queryKey = url.searchParams.get("key") ?? "";
+  const authHeader = request.headers.get("Authorization") ?? "";
+  const bearerKey = authHeader.startsWith("Bearer ") ? authHeader.slice(7).trim() : "";
+  return queryKey === DEFAULT_ADMIN_KEY || bearerKey === DEFAULT_ADMIN_KEY;
+}
+
+function buildPublicSafeState(state: TelemetryState, includePii: boolean) {
+  return {
+    startedAt: state.startedAt,
+    counts: state.counts,
+    byPage: state.byPage,
+    byShopType: state.byShopType ?? {},
+    byTopFeature: state.byTopFeature ?? {},
+    waitlistCount: state.waitlistEntries.length,
+    ...(includePii ? { waitlistEntries: state.waitlistEntries } : {})
+  };
+}
+
+function renderStatsDashboardHtml(state: TelemetryState, isAdmin: boolean): string {
   const c = state.counts;
   const pageRows = Object.entries(state.byPage)
     .sort((a, b) => b[1] - a[1])
@@ -123,22 +155,56 @@ function renderStatsDashboardHtml(state: TelemetryState): string {
     )
     .join("");
 
-  const waitlistRows =
-    state.waitlistEntries.length === 0
-      ? `<tr><td colspan="5" style="color:#64748b;text-align:center;">No waitlist submissions yet</td></tr>`
-      : state.waitlistEntries
-          .slice()
-          .reverse()
-          .map(
-            (w) => `<tr>
-              <td>${escapeHtml(w.timestamp.slice(0, 19).replace("T", " "))} UTC</td>
-              <td><strong>${escapeHtml(w.email)}</strong></td>
-              <td>${escapeHtml(w.shopType)}</td>
-              <td>${escapeHtml(w.topFeature)}</td>
-              <td><code>${escapeHtml(w.page)}</code></td>
-            </tr>`
-          )
-          .join("");
+  const featureRows = Object.entries(state.byTopFeature ?? {})
+    .sort((a, b) => b[1] - a[1])
+    .map(
+      ([feat, count]) =>
+        `<tr><td>${escapeHtml(feat)}</td><td><strong>${count}</strong></td></tr>`
+    )
+    .join("");
+
+  const shopRows = Object.entries(state.byShopType ?? {})
+    .sort((a, b) => b[1] - a[1])
+    .map(
+      ([st, count]) =>
+        `<tr><td>${escapeHtml(st)}</td><td><strong>${count}</strong></td></tr>`
+    )
+    .join("");
+
+  const adminWaitlistSection = isAdmin
+    ? `
+    <h2>Owner View: Pro Waitlist Sign-Up Records (${state.waitlistEntries.length})</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Timestamp</th>
+          <th>Email</th>
+          <th>Shop Setup</th>
+          <th>#1 Requested Pro Feature</th>
+          <th>Source Page</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${
+          state.waitlistEntries.length === 0
+            ? `<tr><td colspan="5" style="color:#64748b;text-align:center;">No waitlist submissions yet</td></tr>`
+            : state.waitlistEntries
+                .slice()
+                .reverse()
+                .map(
+                  (w) => `<tr>
+                    <td>${escapeHtml(w.timestamp.slice(0, 19).replace("T", " "))} UTC</td>
+                    <td><strong>${escapeHtml(w.email)}</strong></td>
+                    <td>${escapeHtml(w.shopType)}</td>
+                    <td>${escapeHtml(w.topFeature)}</td>
+                    <td><code>${escapeHtml(w.page)}</code></td>
+                  </tr>`
+                )
+                .join("")
+        }
+      </tbody>
+    </table>`
+    : `<p class="sub"><em>Privacy protection active: Individual customer email addresses are hidden on the public dashboard. Aggregated waitlist counts and feature votes are shown below.</em></p>`;
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -166,21 +232,21 @@ function renderStatsDashboardHtml(state: TelemetryState): string {
 <body>
   <div class="wrap">
     <h1>30-Day Commercial Validation Funnel — embroiderypricer.com</h1>
-    <p class="sub">Cookieless behavioral event telemetry (no design files or customer quotes are ever collected). <a href="/">← Back to Calculator</a></p>
+    <p class="sub">Cookieless, aggregated behavioral event telemetry (no design files, customer quotes, or public PII). <a href="/">← Back to Calculator</a></p>
 
     <div class="grid">
       <div class="card">
-        <div class="label">1. Tool Page Sessions</div>
-        <div class="val">${c.page_view}</div>
-        <div class="note">Returning users: <strong>${c.returning_visit}</strong></div>
+        <div class="label">1. Unique Tool Sessions</div>
+        <div class="val">${c.unique_session}</div>
+        <div class="note">Total page views: <strong>${c.page_view}</strong></div>
       </div>
       <div class="card">
-        <div class="label">2. Real Files Imported</div>
-        <div class="val">${c.file_imported}</div>
-        <div class="note">DST / PES files parsed locally</div>
+        <div class="label">2. Separate-Day Returns</div>
+        <div class="val">${c.return_session_separate_day}</div>
+        <div class="note">Repeat visits on a later calendar day</div>
       </div>
       <div class="card">
-        <div class="label">3. Calculations Edited</div>
+        <div class="label">3. Calculations Completed</div>
         <div class="val">${c.calculation_edited}</div>
         <div class="note">Custom quantities, stitches, or rates</div>
       </div>
@@ -206,23 +272,35 @@ function renderStatsDashboardHtml(state: TelemetryState): string {
       </div>
     </div>
 
-    <h2>Pro Waitlist Sign-Ups ($19.99 One-Time Intent)</h2>
+    ${adminWaitlistSection}
+
+    <h2>Aggregated Pro Feature Demand ($19.99 Waitlist Votes)</h2>
     <table>
       <thead>
         <tr>
-          <th>Timestamp</th>
-          <th>Email</th>
-          <th>Shop Setup</th>
           <th>#1 Requested Pro Feature</th>
-          <th>Source Page</th>
+          <th>Votes</th>
         </tr>
       </thead>
       <tbody>
-        ${waitlistRows}
+        ${featureRows || `<tr><td colspan="2" style="color:#64748b;text-align:center;">No feature votes recorded yet</td></tr>`}
       </tbody>
     </table>
 
-    <h2>Sessions by Landing Page</h2>
+    <h2>Aggregated Shop Setup Breakdown</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Shop Setup</th>
+          <th>Count</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${shopRows || `<tr><td colspan="2" style="color:#64748b;text-align:center;">No shop setup records yet</td></tr>`}
+      </tbody>
+    </table>
+
+    <h2>Page Views by Landing Page</h2>
     <table>
       <thead>
         <tr>
@@ -288,12 +366,16 @@ export default {
           );
         }
         const state = await loadState();
+        const shopType = (body.shopType ?? "Not specified").slice(0, 80);
+        const topFeature = (body.topFeature ?? "Not specified").slice(0, 100);
         state.counts.waitlist_submitted = (state.counts.waitlist_submitted ?? 0) + 1;
+        state.byShopType[shopType] = (state.byShopType[shopType] ?? 0) + 1;
+        state.byTopFeature[topFeature] = (state.byTopFeature[topFeature] ?? 0) + 1;
         state.waitlistEntries.push({
           timestamp: new Date().toISOString(),
           email,
-          shopType: (body.shopType ?? "Not specified").slice(0, 80),
-          topFeature: (body.topFeature ?? "Not specified").slice(0, 100),
+          shopType,
+          topFeature,
           page: (body.page ?? "/").slice(0, 80)
         });
         if (state.waitlistEntries.length > 500) {
@@ -314,7 +396,8 @@ export default {
 
     if (request.method === "GET" && path === "/api/stats") {
       const state = await loadState();
-      return new Response(JSON.stringify(state, null, 2), {
+      const isAdmin = isAdminAuthorized(request, url);
+      return new Response(JSON.stringify(buildPublicSafeState(state, isAdmin), null, 2), {
         status: 200,
         headers: {
           "Content-Type": "application/json",
@@ -325,7 +408,8 @@ export default {
 
     if (request.method === "GET" && path === "/stats") {
       const state = await loadState();
-      return new Response(renderStatsDashboardHtml(state), {
+      const isAdmin = isAdminAuthorized(request, url);
+      return new Response(renderStatsDashboardHtml(state, isAdmin), {
         status: 200,
         headers: {
           "Content-Type": "text/html; charset=utf-8",
