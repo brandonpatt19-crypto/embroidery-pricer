@@ -6,12 +6,13 @@ const FIRST_VISIT_DATE_KEY = "embroidery_pricer_first_visit_day_v1";
 const LAST_RETURN_FIRED_DAY_KEY = "embroidery_pricer_last_return_day_v1";
 const SESSION_TRACKED_KEY = "embroidery_pricer_session_v1";
 
-function sendTelemetryEvent(eventName: string, pagePath: string): void {
+function sendTelemetryEventsBatch(events: string[], pagePath: string): void {
+  if (events.length === 0) return;
   try {
     void fetch("/api/event", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ event: eventName, page: pagePath }),
+      body: JSON.stringify({ events, page: pagePath }),
       keepalive: true
     }).catch(() => {});
   } catch {
@@ -50,18 +51,19 @@ function init(): void {
     mountEmbroideryTool(root);
   }
 
-  // Record cookieless page_view, unique_session & return_session_separate_day before any user file upload
+  // Record cookieless page_view, unique_session & return_session_separate_day atomically in a single batch POST
   const pagePath = typeof window !== "undefined" ? window.location.pathname || "/" : "/";
-  sendTelemetryEvent("page_view", pagePath);
+  const batchEvents: string[] = ["page_view"];
   if (isNewUniqueSession) {
-    sendTelemetryEvent("unique_session", pagePath);
+    batchEvents.push("unique_session");
   }
   if (hadPreviousVisit) {
-    sendTelemetryEvent("returning_visit", pagePath);
+    batchEvents.push("returning_visit");
   }
   if (isNewSeparateDayReturn) {
-    sendTelemetryEvent("return_session_separate_day", pagePath);
+    batchEvents.push("return_session_separate_day");
   }
+  sendTelemetryEventsBatch(batchEvents, pagePath);
 
   const jumpWrapper = document.getElementById("sticky-jump-wrapper");
   const closeJumpBtn = document.getElementById("btn-close-jump-pill");

@@ -14,6 +14,12 @@ interface AssetsBinding {
 
 export interface Env {
   ASSETS: AssetsBinding;
+  /**
+   * Optional Cloudflare Worker secret (set only in Cloudflare Dashboard encrypted secrets,
+   * never in source code or documentation). Accepted only via `Authorization: Bearer <secret>` header,
+   * never via URL query parameters.
+   */
+  ADMIN_BEARER_SECRET?: string;
 }
 
 const VALID_EVENTS = [
@@ -49,9 +55,7 @@ interface TelemetryState {
   waitlistEntries: WaitlistEntry[];
 }
 
-const CACHE_STATE_URL = "https://telemetry.embroiderypricer.internal/state-v1";
-// Owner access key required to view PII email addresses on /stats?key=... or /api/stats?key=...
-const DEFAULT_ADMIN_KEY = "bp-embroidery-2026-admin";
+const CACHE_STATE_URL = "https://telemetry.embroiderypricer.internal/state-v2";
 
 function createInitialState(): TelemetryState {
   return {
@@ -126,11 +130,22 @@ function escapeHtml(str: string): string {
     .replace(/"/g, "&quot;");
 }
 
-function isAdminAuthorized(request: Request, url: URL): boolean {
-  const queryKey = url.searchParams.get("key") ?? "";
+/**
+ * Checks whether the request includes a valid `Authorization: Bearer <secret>` header
+ * matching the Cloudflare Dashboard secret `env.ADMIN_BEARER_SECRET` (never hard-coded in source,
+ * and never accepted in URL query parameters).
+ */
+function isAdminAuthorized(request: Request, env: Env): boolean {
+  const configuredSecret = (env.ADMIN_BEARER_SECRET ?? "").trim();
+  if (!configuredSecret || configuredSecret.length < 16) {
+    return false;
+  }
   const authHeader = request.headers.get("Authorization") ?? "";
-  const bearerKey = authHeader.startsWith("Bearer ") ? authHeader.slice(7).trim() : "";
-  return queryKey === DEFAULT_ADMIN_KEY || bearerKey === DEFAULT_ADMIN_KEY;
+  if (!authHeader.startsWith("Bearer ")) {
+    return false;
+  }
+  const bearerKey = authHeader.slice(7).trim();
+  return bearerKey.length === configuredSecret.length && bearerKey === configuredSecret;
 }
 
 function buildPublicSafeState(state: TelemetryState, includePii: boolean) {
@@ -140,7 +155,7 @@ function buildPublicSafeState(state: TelemetryState, includePii: boolean) {
     byPage: state.byPage,
     byShopType: state.byShopType ?? {},
     byTopFeature: state.byTopFeature ?? {},
-    waitlistCount: state.waitlistEntries.length,
+    waitlistCount: state.counts.waitlist_submitted ?? 0,
     ...(includePii ? { waitlistEntries: state.waitlistEntries } : {})
   };
 }
@@ -173,7 +188,7 @@ function renderStatsDashboardHtml(state: TelemetryState, isAdmin: boolean): stri
 
   const adminWaitlistSection = isAdmin
     ? `
-    <h2>Owner View: Pro Waitlist Sign-Up Records (${state.waitlistEntries.length})</h2>
+    <h2>Authenticated Owner View: Pro Waitlist Sign-Up Records (${state.waitlistEntries.length})</h2>
     <table>
       <thead>
         <tr>
@@ -204,7 +219,7 @@ function renderStatsDashboardHtml(state: TelemetryState, isAdmin: boolean): stri
         }
       </tbody>
     </table>`
-    : `<p class="sub"><em>Privacy protection active: Individual customer email addresses are hidden on the public dashboard. Aggregated waitlist counts and feature votes are shown below.</em></p>`;
+    : `<p class="sub"><em>Zero-trust PII protection active: No authentication credentials exist in source code or URL parameters. Individual waitlist email records are emitted to authenticated Cloudflare Worker Observability logs and excluded from all unauthenticated HTTP responses.</em></p>`;
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -236,17 +251,17 @@ function renderStatsDashboardHtml(state: TelemetryState, isAdmin: boolean): stri
 
     <div class="grid">
       <div class="card">
-        <div class="label">1. Unique Tool Sessions</div>
+        <div class="label">1. Browser-Tab Sessions</div>
         <div class="val">${c.unique_session}</div>
-        <div class="note">Total page views: <strong>${c.page_view}</strong></div>
+        <div class="note">sessionStorage sessions · Total page views: <strong>${c.page_view}</strong></div>
       </div>
       <div class="card">
-        <div class="label">2. Separate-Day Returns</div>
+        <div class="label">2. Separate-Day Browser Returns</div>
         <div class="val">${c.return_session_separate_day}</div>
-        <div class="note">Repeat visits on a later calendar day</div>
+        <div class="note">localStorage visits on a later UTC date</div>
       </div>
       <div class="card">
-        <div class="label">3. Calculations Completed</div>
+        <div class="label">3. Calculations Modified</div>
         <div class="val">${c.calculation_edited}</div>
         <div class="note">Custom quantities, stitches, or rates</div>
       </div>
@@ -326,15 +341,25 @@ export default {
       try {
         const body = (await request.json()) as {
           event?: string;
+          events?: string[];
           page?: string;
         };
-        const evName = body.event as FunnelEventName | undefined;
-        const state = await loadState();
-        if (evName && VALID_EVENTS.includes(evName)) {
-          state.counts[evName] = (state.counts[evName] ?? 0) + 1;
-          if (evName === "page_view" && typeof body.page === "string") {
-            const cleanPage = body.page.slice(0, 80) || "/";
-            state.byPage[cleanPage] = (state.byPage[cleanPage] ?? 0) + 1;
+        const rawList: string[] = Array.isArray(body.events)
+          ? body.events
+          : typeof body.event === "string"
+            ? [body.event]
+            : [];
+        const validList = rawList.filter((e): e is FunnelEventName =>
+          VALID_EVENTS.includes(e as FunnelEventName)
+        );
+        if (validList.length > 0) {
+          const state = await loadState();
+          for (const evName of validList) {
+            state.counts[evName] = (state.counts[evName] ?? 0) + 1;
+            if (evName === "page_view" && typeof body.page === "string") {
+              const cleanPage = body.page.slice(0, 80) || "/";
+              state.byPage[cleanPage] = (state.byPage[cleanPage] ?? 0) + 1;
+            }
           }
           await saveState(state);
         }
@@ -368,18 +393,35 @@ export default {
         const state = await loadState();
         const shopType = (body.shopType ?? "Not specified").slice(0, 80);
         const topFeature = (body.topFeature ?? "Not specified").slice(0, 100);
+        const page = (body.page ?? "/").slice(0, 80);
         state.counts.waitlist_submitted = (state.counts.waitlist_submitted ?? 0) + 1;
         state.byShopType[shopType] = (state.byShopType[shopType] ?? 0) + 1;
         state.byTopFeature[topFeature] = (state.byTopFeature[topFeature] ?? 0) + 1;
-        state.waitlistEntries.push({
-          timestamp: new Date().toISOString(),
-          email,
-          shopType,
-          topFeature,
-          page: (body.page ?? "/").slice(0, 80)
-        });
-        if (state.waitlistEntries.length > 500) {
-          state.waitlistEntries.shift();
+
+        // Emit structured event to Cloudflare Workers Observability Logs (accessible only via authenticated Cloudflare Dashboard)
+        console.log(
+          JSON.stringify({
+            type: "PRO_WAITLIST_SIGNUP",
+            timestamp: new Date().toISOString(),
+            email,
+            shopType,
+            topFeature,
+            page
+          })
+        );
+
+        // Only retain PII in cache if an encrypted ADMIN_BEARER_SECRET is explicitly configured in the Worker environment
+        if ((env.ADMIN_BEARER_SECRET ?? "").trim().length >= 16) {
+          state.waitlistEntries.push({
+            timestamp: new Date().toISOString(),
+            email,
+            shopType,
+            topFeature,
+            page
+          });
+          if (state.waitlistEntries.length > 500) {
+            state.waitlistEntries.shift();
+          }
         }
         await saveState(state);
         return new Response(JSON.stringify({ ok: true }), {
@@ -396,7 +438,7 @@ export default {
 
     if (request.method === "GET" && path === "/api/stats") {
       const state = await loadState();
-      const isAdmin = isAdminAuthorized(request, url);
+      const isAdmin = isAdminAuthorized(request, env);
       return new Response(JSON.stringify(buildPublicSafeState(state, isAdmin), null, 2), {
         status: 200,
         headers: {
@@ -408,7 +450,7 @@ export default {
 
     if (request.method === "GET" && path === "/stats") {
       const state = await loadState();
-      const isAdmin = isAdminAuthorized(request, url);
+      const isAdmin = isAdminAuthorized(request, env);
       return new Response(renderStatsDashboardHtml(state, isAdmin), {
         status: 200,
         headers: {

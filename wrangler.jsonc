@@ -2,6 +2,9 @@
   "name": "shrill-fog-f96b",
   "main": "src/worker-entry.ts",
   "compatibility_date": "2026-11-16",
+  "observability": {
+    "enabled": true
+  },
   "assets": {
     "directory": "./dist",
     "binding": "ASSETS"
