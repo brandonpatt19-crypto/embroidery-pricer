@@ -22,6 +22,8 @@ export interface PricingRates {
   colorChangeSeconds: number; // seconds per color change, default 30
   hoopingMinutes: number; // minutes per piece, default 1
   heads: number; // number of machine heads, default 1
+  consumablesCostPerPiece?: number; // backing, thread, bobbin, needle wear per piece (default $0.25)
+  operatorHourlyWage?: number; // operator wage/cost during active hooping & handling (default $18.00/hr)
 }
 
 export interface JobInput {
@@ -68,6 +70,11 @@ export interface PricingQuoteResult {
   orderMachineMinutesRaw: number;
   orderMachineMinutes: number;
   effectiveHourlyRate: number;
+  consumablesPerPiece: number;
+  laborPerPiece: number;
+  netMarginPerPiece: number;
+  netOrderProfit: number;
+  netHourlyProfit: number;
   breakTable: QuantityBreakRow[];
 }
 
@@ -92,7 +99,9 @@ export const DEFAULT_PRICING_RATES: Readonly<PricingRates> = {
   machineSpeed: 650,
   colorChangeSeconds: 30,
   hoopingMinutes: 1,
-  heads: 1
+  heads: 1,
+  consumablesCostPerPiece: 0.25,
+  operatorHourlyWage: 18.0
 };
 
 export function createDefaultRates(): PricingRates {
@@ -241,6 +250,27 @@ export function calculateJobQuote(
       ? roundHalfUpCents((decorationPerPiece / time.minutesPerPiece) * 60)
       : 0;
 
+  // Production Economics & Net Contribution Margin
+  // Consumables (backing, thread, bobbin, needle wear) + Operator labor during active hooping/handling + Blank garment wholesale cost
+  const consumablesPerPiece = roundHalfUpCents(
+    Math.max(0, rates.consumablesCostPerPiece ?? 0.25)
+  );
+  const operatorWage = Math.max(0, rates.operatorHourlyWage ?? 18.0);
+  const laborPerPiece = roundHalfUpCents(
+    (Math.max(0, rates.hoopingMinutes) / 60) * operatorWage
+  );
+  const directCostPerPiece = roundHalfUpCents(
+    rawGarmentCost + consumablesPerPiece + laborPerPiece
+  );
+  const netMarginPerPiece = roundHalfUpCents(perPiece - directCostPerPiece);
+  const netOrderProfit = roundHalfUpCents(
+    netMarginPerPiece * quantity + setupFeeApplied
+  );
+  const netHourlyProfit =
+    time.orderMachineMinutes > 0
+      ? roundHalfUpCents((netOrderProfit / time.orderMachineMinutes) * 60)
+      : 0;
+
   const breakTable: QuantityBreakRow[] = rates.quantityBreaks.map((brk) => {
     const discRaw = baseDecoration * (1 - brk.discount);
     const decRaw = Math.max(discRaw, rates.minimumPerPiece);
@@ -286,6 +316,11 @@ export function calculateJobQuote(
     orderMachineMinutesRaw: time.orderMachineMinutesRaw,
     orderMachineMinutes: time.orderMachineMinutes,
     effectiveHourlyRate,
+    consumablesPerPiece,
+    laborPerPiece,
+    netMarginPerPiece,
+    netOrderProfit,
+    netHourlyProfit,
     breakTable
   };
 }

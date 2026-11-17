@@ -754,24 +754,103 @@ a:focus-visible {
   color: var(--success-text);
 }
 
-/* Waitlist Banner */
+/* Shop Production Economics & Net Contribution Margin Bar */
+.profit-summary-bar {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  padding: 0.65rem 0.85rem;
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+  border: 1px solid #86efac;
+  border-radius: 8px;
+}
+
+@media (min-width: 600px) {
+  .profit-summary-bar {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.profit-bar-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.profit-bar-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: #166534;
+}
+
+.profit-bar-value {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #14532d;
+  line-height: 1.25;
+}
+
+.profit-bar-sub {
+  font-size: 0.72rem;
+  color: #15803d;
+}
+
+/* Waitlist Banner & Inline Form */
 .waitlist-banner {
   margin-top: 1rem;
-  padding: 0.75rem;
-  background: var(--bg-subtle);
-  border: 1px solid var(--border-color);
+  padding: 0.85rem 0.95rem;
+  background: linear-gradient(180deg, #f8fafc 0%, #eff6ff 100%);
+  border: 1px solid #bfdbfe;
   border-radius: 8px;
   font-size: 0.8125rem;
   color: var(--text-secondary);
 }
 
 .waitlist-banner p {
-  margin: 0;
+  margin: 0 0 0.65rem;
 }
 
 .waitlist-banner a {
   color: var(--primary);
   font-weight: 700;
+}
+
+.waitlist-inline-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.waitlist-form-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.5rem;
+}
+
+@media (min-width: 640px) {
+  .waitlist-form-row {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.waitlist-form-row select,
+.waitlist-form-row input {
+  width: 100%;
+  padding: 0.45rem 0.55rem;
+  font-size: 0.8125rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 6px;
+  background: #ffffff;
+  color: var(--text-main);
+}
+
+.waitlist-submit-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.65rem;
 }
 
 /* Editorial Content & Footer */

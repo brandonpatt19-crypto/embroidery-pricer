@@ -96,7 +96,13 @@ export function loadStoredSettings(storage?: Storage | null): StoredSettings {
       heads:
         isFiniteNonNegative(r.heads) && r.heads >= 1
           ? Math.floor(r.heads)
-          : def.heads
+          : def.heads,
+      consumablesCostPerPiece: isFiniteNonNegative(r.consumablesCostPerPiece)
+        ? r.consumablesCostPerPiece
+        : (def.consumablesCostPerPiece ?? 0.25),
+      operatorHourlyWage: isFiniteNonNegative(r.operatorHourlyWage)
+        ? r.operatorHourlyWage
+        : (def.operatorHourlyWage ?? 18.0)
     };
 
     const defaultSetupFee = isFiniteNonNegative(parsed.defaultSetupFee)

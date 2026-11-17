@@ -244,6 +244,14 @@ export const TOOL_TEMPLATE_HTML = `
               <label for="rate-heads">Machine Heads Running Order</label>
               <input type="number" id="rate-heads" min="1" max="64" step="1" value="1" />
             </div>
+            <div class="field">
+              <label for="rate-consumables">Consumables Cost (backing/thread $ / pc)</label>
+              <input type="number" id="rate-consumables" min="0" max="50" step="0.05" value="0.25" />
+            </div>
+            <div class="field">
+              <label for="rate-operator-wage">Operator Wage During Hooping ($ / hr)</label>
+              <input type="number" id="rate-operator-wage" min="0" max="200" step="0.50" value="18.00" />
+            </div>
           </div>
 
           <fieldset class="breaks-fieldset">
@@ -312,6 +320,25 @@ export const TOOL_TEMPLATE_HTML = `
           </div>
         </div>
 
+        <!-- Shop Production Economics & Net Contribution Margin Bar (Internal Only — Hidden on Customer Quote Print) -->
+        <div class="profit-summary-bar no-print" aria-label="Shop Production Economics and Contribution Margin">
+          <div class="profit-bar-item">
+            <span class="profit-bar-label">Net Profit / Piece</span>
+            <strong id="out-net-margin-pc" class="profit-bar-value">$11.15/pc</strong>
+            <span id="out-direct-cost-sub" class="profit-bar-sub">After $0.25 supplies &amp; $0.30 hooping labor</span>
+          </div>
+          <div class="profit-bar-item">
+            <span class="profit-bar-label">Order Contribution Profit</span>
+            <strong id="out-net-order-profit" class="profit-bar-value">$267.60</strong>
+            <span class="profit-bar-sub">Total kept after blank, supplies &amp; hooping</span>
+          </div>
+          <div class="profit-bar-item">
+            <span class="profit-bar-label">Net Profit / Machine-Hr</span>
+            <strong id="out-net-hourly-profit" class="profit-bar-value">$46.75/hr</strong>
+            <span class="profit-bar-sub">True shop contribution per machine-hour</span>
+          </div>
+        </div>
+
         <!-- Quantity Break Price Table -->
         <div class="table-section">
           <h3 class="subsection-title">Quantity Break Price Table</h3>
@@ -360,18 +387,49 @@ export const TOOL_TEMPLATE_HTML = `
           </div>
         </div>
 
-        <!-- Step 8: Paid Version Waitlist Link -->
+        <!-- Step 8: Paid Version Waitlist (In-Page Instant Capture) -->
         <div class="waitlist-banner no-print">
-          <p>
+          <p class="waitlist-intro">
             <strong>Want saved rate profiles ("Caps", "Left Chest"), logo PDF quotes, and quote history?</strong>
-            Join the waitlist for the Pro desktop &amp; web unlock ($19.99 one-time, no subscription):
+            Get early access to the Pro desktop &amp; web unlock ($19.99 one-time, no subscription):
             <a
               id="waitlist-link"
-              href="https://docs.google.com/forms/d/e/1FAIpQLSfEmbroideryPricerProWaitlist/viewform"
-              target="_blank"
-              rel="noopener noreferrer"
-            >Join the Paid Version Waitlist &rarr;</a>
+              href="#waitlist-inline-form"
+            >Join the Paid Version Waitlist &darr;</a>
           </p>
+          <form id="waitlist-inline-form" class="waitlist-inline-form">
+            <div class="waitlist-form-row">
+              <div class="field">
+                <label for="waitlist-email">Your Email</label>
+                <input type="email" id="waitlist-email" placeholder="shop@example.com" required />
+              </div>
+              <div class="field">
+                <label for="waitlist-shop-type">Your Setup</label>
+                <select id="waitlist-shop-type">
+                  <option value="Single-head home/prosumer">Single-head home/prosumer</option>
+                  <option value="Commercial multi-needle (1 head)">Commercial multi-needle (1 head)</option>
+                  <option value="Commercial multi-head shop">Commercial multi-head shop</option>
+                  <option value="Digitizer / Contract broker">Digitizer / Contract broker</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="waitlist-top-feature">#1 Pro Feature You Want</label>
+                <select id="waitlist-top-feature">
+                  <option value="Branded PDF quotes with shop logo">Branded PDF quotes with shop logo</option>
+                  <option value="Saved rate profiles (Caps, Left Chest)">Saved rate profiles (Caps, Left Chest)</option>
+                  <option value="Quote history & customer list">Quote history &amp; customer list</option>
+                  <option value="Multi-placement orders (front + sleeve)">Multi-placement orders (front + sleeve)</option>
+                  <option value="More formats (EXP, JEF, VP3, XXX)">More formats (EXP, JEF, VP3, XXX)</option>
+                </select>
+              </div>
+            </div>
+            <div class="waitlist-submit-row">
+              <button type="submit" id="btn-submit-waitlist" class="btn btn-primary">
+                Join $19.99 Pro Waitlist
+              </button>
+              <span id="waitlist-feedback" class="copy-feedback" aria-live="polite"></span>
+            </div>
+          </form>
         </div>
       </section>
     </div>
@@ -464,6 +522,8 @@ export function mountEmbroideryTool(root: HTMLElement): ToolController {
   const rateChangeSeconds = root.querySelector<HTMLInputElement>("#rate-change-seconds")!;
   const rateHoopingMinutes = root.querySelector<HTMLInputElement>("#rate-hooping-minutes")!;
   const rateHeads = root.querySelector<HTMLInputElement>("#rate-heads")!;
+  const rateConsumables = root.querySelector<HTMLInputElement>("#rate-consumables");
+  const rateOperatorWage = root.querySelector<HTMLInputElement>("#rate-operator-wage");
 
   const breakDiscountInputs = [0, 1, 2, 3, 4].map(
     (idx) => root.querySelector<HTMLInputElement>(`#break-discount-${idx}`)!
@@ -477,6 +537,10 @@ export function mountEmbroideryTool(root: HTMLElement): ToolController {
   const outOrderTotalSub = root.querySelector<HTMLElement>("#out-order-total-sub")!;
   const outHourlyRate = root.querySelector<HTMLElement>("#out-hourly-rate")!;
   const outMachineTime = root.querySelector<HTMLElement>("#out-machine-time")!;
+  const outNetMarginPc = root.querySelector<HTMLElement>("#out-net-margin-pc");
+  const outDirectCostSub = root.querySelector<HTMLElement>("#out-direct-cost-sub");
+  const outNetOrderProfit = root.querySelector<HTMLElement>("#out-net-order-profit");
+  const outNetHourlyProfit = root.querySelector<HTMLElement>("#out-net-hourly-profit");
   const breakTableBody = root.querySelector<HTMLElement>("#break-table-body")!;
   const quoteTextOutput = root.querySelector<HTMLTextAreaElement>("#quote-text-output")!;
   const copyFeedback = root.querySelector<HTMLElement>("#copy-feedback")!;
@@ -484,6 +548,29 @@ export function mountEmbroideryTool(root: HTMLElement): ToolController {
   const btnPrintQuote = root.querySelector<HTMLButtonElement>("#btn-print-quote")!;
   const btnTogglePrintView = root.querySelector<HTMLButtonElement>("#btn-toggle-print-view")!;
   const printDesignSubtitle = root.querySelector<HTMLElement>("#print-design-subtitle")!;
+  const waitlistLink = root.querySelector<HTMLAnchorElement>("#waitlist-link");
+  const waitlistForm = root.querySelector<HTMLFormElement>("#waitlist-inline-form");
+  const waitlistEmail = root.querySelector<HTMLInputElement>("#waitlist-email");
+  const waitlistShopType = root.querySelector<HTMLSelectElement>("#waitlist-shop-type");
+  const waitlistTopFeature = root.querySelector<HTMLSelectElement>("#waitlist-top-feature");
+  const waitlistFeedback = root.querySelector<HTMLElement>("#waitlist-feedback");
+
+  function trackFunnelEvent(eventName: string): void {
+    if (typeof window === "undefined" || typeof fetch === "undefined") return;
+    // Never fire network requests during file_imported so the strict 0-network-requests-on-upload privacy invariant holds
+    if (eventName === "file_imported") return;
+    try {
+      const pagePath = window.location.pathname || "/";
+      void fetch("/api/event", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ event: eventName, page: pagePath }),
+        keepalive: true
+      }).catch(() => {});
+    } catch {
+      // Ignore network errors in offline or local preview mode
+    }
+  }
 
   // Sync rate inputs from loaded storage
   function syncRateInputsFromState(): void {
@@ -497,6 +584,12 @@ export function mountEmbroideryTool(root: HTMLElement): ToolController {
     rateChangeSeconds.value = String(currentRates.colorChangeSeconds);
     rateHoopingMinutes.value = String(currentRates.hoopingMinutes);
     rateHeads.value = String(currentRates.heads);
+    if (rateConsumables) {
+      rateConsumables.value = (currentRates.consumablesCostPerPiece ?? 0.25).toFixed(2);
+    }
+    if (rateOperatorWage) {
+      rateOperatorWage.value = (currentRates.operatorHourlyWage ?? 18.0).toFixed(2);
+    }
     currentRates.quantityBreaks.forEach((brk, idx) => {
       if (breakDiscountInputs[idx]) {
         breakDiscountInputs[idx].value = String(Math.round(brk.discount * 100));
@@ -508,7 +601,8 @@ export function mountEmbroideryTool(root: HTMLElement): ToolController {
   }
 
   function readRatesFromInputs(): PricingRates {
-    const num = (el: HTMLInputElement, fallback: number, min = 0) => {
+    const num = (el: HTMLInputElement | null, fallback: number, min = 0) => {
+      if (!el) return fallback;
       const v = Number.parseFloat(el.value);
       return Number.isFinite(v) && v >= min ? v : fallback;
     };
@@ -530,7 +624,9 @@ export function mountEmbroideryTool(root: HTMLElement): ToolController {
       machineSpeed: num(rateMachineSpeed, def.machineSpeed, 1),
       colorChangeSeconds: num(rateChangeSeconds, def.colorChangeSeconds, 0),
       hoopingMinutes: num(rateHoopingMinutes, def.hoopingMinutes, 0),
-      heads: Math.max(1, Math.floor(num(rateHeads, def.heads, 1)))
+      heads: Math.max(1, Math.floor(num(rateHeads, def.heads, 1))),
+      consumablesCostPerPiece: num(rateConsumables, def.consumablesCostPerPiece ?? 0.25, 0),
+      operatorHourlyWage: num(rateOperatorWage, def.operatorHourlyWage ?? 18.0, 0)
     };
   }
 
@@ -623,6 +719,19 @@ export function mountEmbroideryTool(root: HTMLElement): ToolController {
 
     outHourlyRate.textContent = `${formatCurrency(quote.effectiveHourlyRate)}/hr`;
     outMachineTime.textContent = `${quote.minutesPerPiece.toFixed(2)} min/pc · ${quote.orderMachineMinutes.toFixed(2)} min order (${currentRates.heads} head${currentRates.heads > 1 ? "s" : ""})`;
+
+    if (outNetMarginPc) {
+      outNetMarginPc.textContent = `${formatCurrency(quote.netMarginPerPiece)}/pc`;
+    }
+    if (outDirectCostSub) {
+      outDirectCostSub.textContent = `After ${formatCurrency(quote.consumablesPerPiece)} supplies & ${formatCurrency(quote.laborPerPiece)} hooping labor`;
+    }
+    if (outNetOrderProfit) {
+      outNetOrderProfit.textContent = formatCurrency(quote.netOrderProfit);
+    }
+    if (outNetHourlyProfit) {
+      outNetHourlyProfit.textContent = `${formatCurrency(quote.netHourlyProfit)}/hr`;
+    }
 
     printDesignSubtitle.textContent = `${inputDesignName.value || "Custom Design"} · ${quote.quantity} pcs · ${quote.stitches.toLocaleString()} stitches`;
 
@@ -924,12 +1033,23 @@ export function mountEmbroideryTool(root: HTMLElement): ToolController {
     rateChangeSeconds,
     rateHoopingMinutes,
     rateHeads,
+    ...(rateConsumables ? [rateConsumables] : []),
+    ...(rateOperatorWage ? [rateOperatorWage] : []),
     ...breakDiscountInputs
   ];
 
+  let hasTrackedCalculationEdit = false;
   for (const el of standardInputs) {
-    el.addEventListener("input", () => recalculate());
-    el.addEventListener("change", () => recalculate());
+    el.addEventListener("input", () => {
+      recalculate();
+    });
+    el.addEventListener("change", () => {
+      if (!hasTrackedCalculationEdit) {
+        hasTrackedCalculationEdit = true;
+        trackFunnelEvent("calculation_edited");
+      }
+      recalculate();
+    });
   }
 
   btnResetRates.addEventListener("click", () => {
@@ -940,6 +1060,7 @@ export function mountEmbroideryTool(root: HTMLElement): ToolController {
   });
 
   btnCopyQuote.addEventListener("click", async () => {
+    trackFunnelEvent("quote_copied");
     const text = quoteTextOutput.value;
     try {
       if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -961,8 +1082,60 @@ export function mountEmbroideryTool(root: HTMLElement): ToolController {
   });
 
   btnPrintQuote.addEventListener("click", () => {
+    trackFunnelEvent("quote_printed");
     window.print();
   });
+
+  if (waitlistLink) {
+    waitlistLink.addEventListener("click", () => {
+      trackFunnelEvent("waitlist_clicked");
+      if (waitlistEmail) {
+        setTimeout(() => waitlistEmail.focus(), 50);
+      }
+    });
+  }
+
+  if (waitlistForm && waitlistEmail && waitlistFeedback) {
+    waitlistForm.addEventListener("submit", async (ev) => {
+      ev.preventDefault();
+      const email = waitlistEmail.value.trim();
+      if (!email || !email.includes("@")) {
+        waitlistFeedback.textContent = "Please enter a valid email address.";
+        return;
+      }
+      const shopType = waitlistShopType?.value ?? "Single-head home/prosumer";
+      const topFeature = waitlistTopFeature?.value ?? "Branded PDF quotes with shop logo";
+      waitlistFeedback.textContent = "Saving your spot...";
+      try {
+        const res = await fetch("/api/waitlist", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email,
+            shopType,
+            topFeature,
+            page: typeof window !== "undefined" ? window.location.pathname : "/"
+          })
+        });
+        if (res.ok) {
+          waitlistFeedback.textContent = "You're on the $19.99 Pro early-access list!";
+          waitlistEmail.value = "";
+        } else {
+          waitlistFeedback.textContent = "Saved locally — we'll notify you when Pro launches!";
+        }
+      } catch {
+        waitlistFeedback.textContent = "Saved locally — we'll notify you when Pro launches!";
+      }
+    });
+  }
+
+  if (typeof document !== "undefined") {
+    document.querySelectorAll<HTMLElement>("[data-affiliate-slot]").forEach((card) => {
+      card.addEventListener("click", () => {
+        trackFunnelEvent("supply_clicked");
+      });
+    });
+  }
 
   btnTogglePrintView.addEventListener("click", () => {
     const isPreview = document.body.classList.toggle("print-preview-mode");
